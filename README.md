@@ -19,3 +19,5 @@ samples, guidance on mobile development, and a full API reference.
 Some notes :
 - Whatsapp Design :  https://drissas.com/tuto-flutter-whatsapp/
 - sqflite database : https://blog.devgenius.io/using-sqlite-in-flutter-4b16e5ef36dc
+- doc flutter plateform specific implementation https://docs.flutter.dev/development/platform-integration/platform-channels
++ https://developer.android.com/training/permissions/requesting#kotlin 

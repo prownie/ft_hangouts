@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'menu_section.dart';
+import 'sms_helper.dart';
 
 const dGreen = Color.fromARGB(255, 68, 137, 202);
 const dWhite = Color.fromARGB(255, 216, 229, 227);
@@ -25,13 +26,6 @@ class HomePage extends StatelessWidget {
           IconButton(
               onPressed: () {},
               icon: const Icon(
-                Icons.search_rounded,
-                color: dWhite,
-                size: 30,
-              )),
-          IconButton(
-              onPressed: () {},
-              icon: const Icon(
                 Icons.account_circle,
                 color: dWhite,
                 size: 30,
@@ -54,4 +48,6 @@ class HomePage extends StatelessWidget {
           )),
     );
   }
+
+  
 }
