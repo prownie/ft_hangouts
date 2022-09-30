@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
-const dGreen = Color.fromARGB(255, 68, 137, 202);
-const dWhite = Color.fromARGB(255, 216, 229, 227);
-const dBlack = Color.fromARGB(255, 38, 37, 35);
+const Blue = Color.fromARGB(255, 68, 137, 202);
+const White = Color.fromARGB(255, 216, 229, 227);
+const Black = Color.fromARGB(255, 38, 37, 35);
 
 class MenuSection extends StatelessWidget {
   final List menuItems = ["Message", "Contacts", "Call"];
@@ -11,7 +10,7 @@ class MenuSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-        color: dBlack,
+        color: Black,
         child: SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             child: Padding(
@@ -22,7 +21,7 @@ class MenuSection extends StatelessWidget {
                       margin: const EdgeInsets.only(right: 50),
                       child: Text(
                         item,
-                        style: GoogleFonts.raleway(
+                        style: TextStyle(
                           color: Colors.white60,
                           fontSize: 29,
                         ),
