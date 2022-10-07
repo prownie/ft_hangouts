@@ -25,3 +25,4 @@ Some notes :
 https://stackoverflow.com/questions/45385209/how-to-ask-permission-runtime-again-if-the-user-deny-for-the-first-time +
 https://www.digitalocean.com/community/tutorials/android-alert-dialog-using-kotlin
 - databaseController : https://suragch.medium.com/simple-sqflite-database-example-in-flutter-e56a5aaa3f91
+- NAVBAR STYLEY : https://medium.com/coding-with-flutter/flutter-case-study-multiple-navigators-with-bottomnavigationbar-90eb6caa6dbf

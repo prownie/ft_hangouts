@@ -1,15 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:ft_hangouts/pages/contacts_page.dart';
-import 'package:ft_hangouts/pages/conversations_page.dart';
-import 'package:ft_hangouts/pages/profile.dart';
+import 'package:ft_hangouts/database_controller.dart';
 import 'dart:async';
 import 'menu_section.dart';
 import 'package:flutter/services.dart';
-// import 'sms_helper.dart';
-
-const Blue = Color.fromARGB(255, 68, 137, 202);
-const White = Color.fromARGB(255, 216, 229, 227);
-const Black = Color.fromARGB(255, 38, 37, 35);
+import 'models/models.dart';
+import 'pages/pages.dart';
+import 'main.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -19,14 +15,61 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  final ValueNotifier<bool> updater = ValueNotifier(false);
   int _selectedIndex = 0;
   static const TextStyle optionStyle =
       TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
-  static const List<Widget> _widgetOptions = <Widget>[
-    conversationsPage(),
-    contactsPage(),
-    profile(),
-  ];
+  late List<Widget> _widgetOptions;
+
+  @override
+  void initState() {
+    _widgetOptions = <Widget>[
+      conversationsPage(),
+      contactsPage(updater),
+      profile(),
+    ];
+    _selectedIndex = _selectedIndex;
+  }
+
+  Widget _getActionButton() {
+    print(_selectedIndex);
+    if (_selectedIndex != 2) {
+      if (_selectedIndex == 0) {
+        return FloatingActionButton.extended(
+            label: const Text('New message'),
+            icon: const Icon(Icons.message_rounded),
+            backgroundColor: Color.fromARGB(255, 49, 50, 54),
+            foregroundColor: Color.fromARGB(255, 239, 239, 241),
+            onPressed: () async {
+              await Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => createDiscussion(),
+                ),
+              );
+            });
+        // onPressed: () {
+        //   globalColor.value = Colors.pink;
+        //   print('new color = ${globalColor.value}');
+        // });
+      } else if (_selectedIndex == 1) {
+        return FloatingActionButton.extended(
+            label: const Text('New contact'),
+            icon: const Icon(Icons.perm_contact_cal_rounded),
+            backgroundColor: Color.fromARGB(255, 49, 50, 54),
+            foregroundColor: Color.fromARGB(255, 239, 239, 241),
+            onPressed: () async {
+              await Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => createContact(updater),
+                ),
+              );
+            });
+      }
+    }
+    return SizedBox.shrink();
+  }
 
   void _onItemTapped(int index) {
     setState(() {
@@ -40,9 +83,8 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(
         title: const Text('Ft_hangouts'),
       ),
-      body: Center(
-        child: _widgetOptions.elementAt(_selectedIndex),
-      ),
+      body: _widgetOptions.elementAt(_selectedIndex),
+      floatingActionButton: _getActionButton(),
       bottomNavigationBar: BottomNavigationBar(
           items: const <BottomNavigationBarItem>[
             BottomNavigationBarItem(

@@ -1,30 +1,38 @@
+import 'dart:ffi';
+
+import 'package:flutter/foundation.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
-import 'models/contact.dart';
+import 'models/models.dart';
 import 'dart:async';
 
 class databaseController {
   static const _databaseName = 'db_hangouts';
 
-  databaseController._privateConstructor();
-  static final databaseController instance =
-      databaseController._privateConstructor();
+  static final databaseController instance = new databaseController.internal();
+
+  factory databaseController() => instance;
+  static Database? _db;
 
   static Database? _database;
-  Future<Database?> get database async {
-    if (_database != null) return _database;
-    // lazily instantiate the db the first time it is accessed
-    _database = await _initDatabase();
-    return _database;
+
+  Future<Database?> get db async {
+    if (_db != null) {
+      return _db;
+    }
+    _db = await _initDatabase();
+    return _db;
   }
 
-  Future<Database> _initDatabase() async {
+  databaseController.internal();
+
+  _initDatabase() async {
+    print('in init');
     final database = await openDatabase(
       join(await getDatabasesPath(), _databaseName),
       onCreate: _onCreate,
       version: 1,
     );
-    CreationsForTest();
     return database;
   }
 
@@ -44,27 +52,65 @@ class databaseController {
           )''');
   }
 
-  Future<int> insertContact(Map<String, dynamic> row) async {
-    Database db = await instance.database as Database;
+  Future<int> insertContact(Contact contact) async {
+    Database db = await instance.db as Database;
+    Map<String, dynamic> row = {
+      'firstName': contact.firstName,
+      'lastName': contact.lastName,
+      'phoneNumber': contact.phoneNumber,
+    };
     return await db.insert('Contact', row);
   }
 
   Future<int> insertMessage(Map<String, dynamic> row) async {
-    Database db = await instance.database as Database;
+    Database db = await instance.db as Database;
     return await db.insert('Message', row);
   }
 
   Future<List<Map<String, dynamic>>> getContacts() async {
-    Database db = await instance.database as Database;
+    Database db = await instance.db as Database;
     return await db.query('Contact');
+  }
+
+  Future<dynamic> updateContact(Contact contact) async {
+    Map<String, dynamic> row = {
+      'id': contact.id,
+      'firstName': contact.firstName,
+      'lastName': contact.lastName,
+      'phoneNumber': contact.phoneNumber,
+    };
+    Database db = await instance.db as Database;
+    db.update('Contact', row, where: 'id = ?', whereArgs: [contact.id]);
+  }
+
+  Future<dynamic> deleteContact(Contact contact) async {
+    Database db = await instance.db as Database;
+    db.delete('Contact', where: 'id = ?', whereArgs: [contact.id]);
+  }
+
+  Future<dynamic> getContactFromId(String id) async {
+    List<String> ids = [id];
+    Database db = await instance.db as Database;
+    return await db.query('Contact',
+        columns: ['id', 'firstName', 'lastName', 'phoneNumber'],
+        where: 'id = ?',
+        whereArgs: ids,
+        limit: 1);
   }
 
   CreationsForTest() {
     insertContact(new Contact(
-            firstName: 'Robin', lastName: 'Pichon', phoneNumber: '0123456789')
-        .toMap());
+        firstName: 'Robin', lastName: 'Pichon', phoneNumber: '0123456789'));
     insertContact(new Contact(
-            firstName: 'Prownie', lastName: 'Teuteu', phoneNumber: '9876543210')
-        .toMap());
+        firstName: 'Prownie', lastName: 'Teuteu', phoneNumber: '9876543210'));
+    insertContact(new Contact(
+        firstName: 'Thomas', lastName: 'Grangeot', phoneNumber: '9876543210'));
+    insertContact(new Contact(
+        firstName: 'jdel', lastName: 'ros', phoneNumber: '9876543210'));
+    insertContact(new Contact(
+        firstName: 'edep', lastName: 'auw', phoneNumber: '9876543210'));
+    insertContact(new Contact(
+        firstName: 'fr', lastName: 'frey', phoneNumber: '9876543210'));
+    print('created contacts');
   }
 }

@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
-
-const Blue = Color.fromARGB(255, 68, 137, 202);
-const White = Color.fromARGB(255, 216, 229, 227);
-const Black = Color.fromARGB(255, 38, 37, 35);
+import '../utils/constants.dart';
 
 class MenuSection extends StatelessWidget {
   final List menuItems = ["Message", "Contacts", "Call"];
@@ -10,7 +7,7 @@ class MenuSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-        color: Black,
+        color: Constants.Black,
         child: SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             child: Padding(
