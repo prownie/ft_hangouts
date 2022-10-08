@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:ft_hangouts/database_controller.dart';
 import 'dart:async';
-import 'menu_section.dart';
 import 'package:flutter/services.dart';
 import 'models/models.dart';
 import 'pages/pages.dart';
 import 'main.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -32,13 +32,11 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _getActionButton() {
-    print(_selectedIndex);
     if (_selectedIndex != 2) {
       if (_selectedIndex == 0) {
         return FloatingActionButton.extended(
-            label: const Text('New message'),
+            label: Text(AppLocalizations.of(context)!.newMessage),
             icon: const Icon(Icons.message_rounded),
-            backgroundColor: Color.fromARGB(255, 49, 50, 54),
             foregroundColor: Color.fromARGB(255, 239, 239, 241),
             onPressed: () async {
               await Navigator.push(
@@ -54,9 +52,8 @@ class _HomePageState extends State<HomePage> {
         // });
       } else if (_selectedIndex == 1) {
         return FloatingActionButton.extended(
-            label: const Text('New contact'),
+            label: Text(AppLocalizations.of(context)!.newContact),
             icon: const Icon(Icons.perm_contact_cal_rounded),
-            backgroundColor: Color.fromARGB(255, 49, 50, 54),
             foregroundColor: Color.fromARGB(255, 239, 239, 241),
             onPressed: () async {
               await Navigator.push(

@@ -5,6 +5,7 @@ import 'package:flutter/src/widgets/ticker_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:ft_hangouts/database_controller.dart';
 import 'package:ft_hangouts/models/contact.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class contactPage extends StatefulWidget {
   final ValueNotifier<bool> updater;
@@ -62,11 +63,11 @@ class contactPageState extends State<contactPage> {
                 controller: firstNameController,
                 validator: (value) {
                   if (value == null || value.isEmpty)
-                    return "First name can't be empty";
+                    return AppLocalizations.of(context)!.firstNameEmpty;
                   return null;
                 },
                 decoration: InputDecoration(
-                    labelText: 'First Name',
+                    labelText: AppLocalizations.of(context)!.firstName,
                     border: OutlineInputBorder(),
                     hintText: _contact!.firstName!),
               ),
@@ -75,11 +76,11 @@ class contactPageState extends State<contactPage> {
                 controller: lastNameController,
                 validator: (value) {
                   if (value == null || value.isEmpty)
-                    return "Last name can't be empty";
+                    return AppLocalizations.of(context)!.lastNameEmpty;
                   return null;
                 },
                 decoration: InputDecoration(
-                    labelText: 'Last Name',
+                    labelText: AppLocalizations.of(context)!.lastName,
                     border: OutlineInputBorder(),
                     hintText: _contact!.lastName!),
               ),
@@ -90,11 +91,11 @@ class contactPageState extends State<contactPage> {
                   if (value == null ||
                       value.isEmpty ||
                       !RegExp(r"^0\d{9}$").hasMatch(value))
-                    return "Bad phone number format. Must start with 0, followed by 9 digits";
+                    return AppLocalizations.of(context)!.phoneNumberFormat;
                   return null;
                 },
                 decoration: InputDecoration(
-                    labelText: 'Phone Number',
+                    labelText: AppLocalizations.of(context)!.phoneNumber,
                     border: OutlineInputBorder(),
                     hintText: _contact!.phoneNumber!),
               ),
@@ -112,14 +113,16 @@ class contactPageState extends State<contactPage> {
                           .then((value) {
                         initState();
                         ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Update done')),
+                          SnackBar(
+                              content: Text(
+                                  AppLocalizations.of(context)!.updateDone)),
                         );
                       });
                     }
                   },
-                  child: const Text('Save changes')),
+                  child: Text(AppLocalizations.of(context)!.saveChange)),
               ElevatedButton(
-                child: const Text('Delete contacts'),
+                child: Text(AppLocalizations.of(context)!.deleteContact),
                 style: ButtonStyle(
                   backgroundColor: MaterialStateProperty.all(Colors.red),
                   foregroundColor: MaterialStateProperty.all(Colors.black),
@@ -136,7 +139,7 @@ class contactPageState extends State<contactPage> {
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: <Widget>[
                               ElevatedButton(
-                                  child: const Text('No'),
+                                  child: Text(AppLocalizations.of(context)!.no),
                                   style: ButtonStyle(
                                     backgroundColor:
                                         MaterialStateProperty.all(Colors.black),
@@ -147,7 +150,8 @@ class contactPageState extends State<contactPage> {
                                     Navigator.pop(context);
                                   }),
                               ElevatedButton(
-                                  child: const Text('Yes'),
+                                  child:
+                                      Text(AppLocalizations.of(context)!.yes),
                                   style: ButtonStyle(
                                     backgroundColor:
                                         MaterialStateProperty.all(Colors.black),

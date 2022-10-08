@@ -3,7 +3,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class sharedPrefHelper {
   static Future<MaterialColor> getFavColor() async {
-    print('here');
     final prefs = await SharedPreferences.getInstance();
     Color prefColor = Color(prefs.getInt('color') ?? Colors.blue.value);
 
@@ -19,7 +18,6 @@ class sharedPrefHelper {
       800: Color.fromRGBO(prefColor.red, prefColor.green, prefColor.blue, .9),
       900: Color.fromRGBO(prefColor.red, prefColor.green, prefColor.blue, 1),
     };
-    print('here2');
     Color test =
         Color.fromRGBO(prefColor.red, prefColor.green, prefColor.blue, 1);
     print('value after get =${prefColor}');
@@ -42,7 +40,28 @@ class sharedPrefHelper {
       900: Color.fromRGBO(selColor.red, selColor.green, selColor.blue, 1),
     };
     prefs.setInt('color', selColor.value);
-    print('value after set =${selColor}');
     return MaterialColor(selColor.value, mapColor);
+  }
+
+  static Future<String> getFavLocale() async {
+    final prefs = await SharedPreferences.getInstance();
+    String? locale = prefs.getString("locale");
+    if (locale == 'fr' || locale == 'en') {
+      return (locale!);
+    } else {
+      return "";
+    }
+  }
+
+  static Future<String> setFavLocale(String locale) async {
+    final prefs = await SharedPreferences.getInstance();
+    if (locale == 'fr' || locale == 'en') {
+      prefs.setString('locale', locale);
+      return locale;
+    } else if (locale == "None") {
+      prefs.remove('locale');
+    }
+
+    return "";
   }
 }

@@ -1,0 +1,22 @@
+{
+    "helloWorld": "Bonjour monde!",
+		"newContact": "Nouveau contact",
+		"newMessage": "Nouveau message",
+		"firstName": "Prénom",
+    "firstNameEmpty": "Le prénom ne peut pas être vide",
+    "lastName": "Nom de famille",
+		"lastNameEmpty": "Le nom de famille ne peut pas être vide",
+    "phoneNumber": "Numéro de téléphone",
+    "phoneNumberFormat": "Le numéro de téléphone doit commencer par 0 et contenir 10 chiffres",
+    "saveChange": "Sauvegarder modifications",
+    "deleteContact": "Supprimer contact",
+    "yes": "Oui",
+    "no": "Non",
+    "updateDone": "Contact modifié",
+    "createNewContact": "Créer nouveau contact",
+    "createDone": "Nouveau contact créé",
+    "createContact": "Créer contact",
+    "changeThemeColor": "Sélectionner la couleur souhaitée pour changer le thème",
+		"changeLocale": "Langage",
+		"phoneLanguage": "Langage du téléphone"
+}

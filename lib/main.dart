@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
 import 'home_page.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'utils/shared_preferences.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 
 ValueNotifier<MaterialColor> globalColor = ValueNotifier(Colors.grey);
-
+ValueNotifier<String> globalLocale = ValueNotifier("");
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   globalColor.value = await sharedPrefHelper.getFavColor();
+  globalLocale.value = await sharedPrefHelper.getFavLocale();
+  print(globalLocale.value);
   runApp(MyApp());
 }
 
@@ -18,7 +21,10 @@ class MyApp extends StatelessWidget {
       valueListenable: globalColor,
       builder: (context, value, _) {
         return MaterialApp(
+          locale:
+              !globalLocale.value.isEmpty ? Locale(globalLocale.value) : null,
           localizationsDelegates: [
+            AppLocalizations.delegate, // Add this line
             GlobalMaterialLocalizations.delegate,
             GlobalWidgetsLocalizations.delegate,
             GlobalCupertinoLocalizations.delegate,

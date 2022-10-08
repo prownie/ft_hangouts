@@ -5,6 +5,7 @@ import 'package:flutter/src/widgets/ticker_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:ft_hangouts/database_controller.dart';
 import 'package:ft_hangouts/models/contact.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class createContact extends StatefulWidget {
   final ValueNotifier<bool> updater;
@@ -32,7 +33,7 @@ class createContactState extends State<createContact> {
           icon: Icon(Icons.arrow_back),
           onPressed: () => Navigator.pop(context, true),
         ),
-        title: const Text('Create new contact'),
+        title: Text(AppLocalizations.of(context)!.createNewContact),
       ),
       body: Form(
         key: _formKey,
@@ -45,11 +46,11 @@ class createContactState extends State<createContact> {
               controller: firstNameController,
               validator: (value) {
                 if (value == null || value.isEmpty)
-                  return "First name can't be empty";
+                  return AppLocalizations.of(context)!.firstNameEmpty;
                 return null;
               },
               decoration: InputDecoration(
-                labelText: 'First Name',
+                labelText: AppLocalizations.of(context)!.firstName,
                 border: OutlineInputBorder(),
               ),
             ),
@@ -58,11 +59,11 @@ class createContactState extends State<createContact> {
               controller: lastNameController,
               validator: (value) {
                 if (value == null || value.isEmpty)
-                  return "Last name can't be empty";
+                  return AppLocalizations.of(context)!.lastNameEmpty;
                 return null;
               },
               decoration: InputDecoration(
-                labelText: 'Last Name',
+                labelText: AppLocalizations.of(context)!.lastName,
                 border: OutlineInputBorder(),
               ),
             ),
@@ -73,11 +74,11 @@ class createContactState extends State<createContact> {
                 if (value == null ||
                     value.isEmpty ||
                     !RegExp(r"^0\d{9}$").hasMatch(value))
-                  return "Bad phone number format. Must start with 0, followed by 9 digits";
+                  return AppLocalizations.of(context)!.phoneNumberFormat;
                 return null;
               },
               decoration: InputDecoration(
-                labelText: 'Phone Number',
+                labelText: AppLocalizations.of(context)!.phoneNumber,
                 border: OutlineInputBorder(),
               ),
             ),
@@ -94,14 +95,16 @@ class createContactState extends State<createContact> {
                         .insertContact(updatedContact)
                         .then((value) {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('New contact created')),
+                        SnackBar(
+                            content:
+                                Text(AppLocalizations.of(context)!.createDone)),
                       );
                       widget.updater.value = !widget.updater.value;
                       Navigator.pop(context, true);
                     });
                   }
                 },
-                child: const Text('Create contact')),
+                child: Text(AppLocalizations.of(context)!.createContact)),
           ],
         ),
       ),
