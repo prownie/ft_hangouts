@@ -6,6 +6,7 @@ import 'models/models.dart';
 import 'pages/pages.dart';
 import 'main.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'utils/utils.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -29,6 +30,11 @@ class _HomePageState extends State<HomePage> {
       profile(),
     ];
     _selectedIndex = _selectedIndex;
+    sms_controller.initPermission();
+    sms_controller().smsReceived().listen((event) {
+      print('in smsReceived');
+      print('in sms received, value = ${event}');
+    });
   }
 
   Widget _getActionButton() {

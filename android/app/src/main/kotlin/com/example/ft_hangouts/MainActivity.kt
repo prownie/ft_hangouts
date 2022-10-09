@@ -1,47 +1,66 @@
 package com.example.ft_hangouts
 
-import androidx.annotation.NonNull
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine
+import io.flutter.plugin.common.BinaryMessenger
+import io.flutter.plugin.common.EventChannel
 import io.flutter.plugin.common.MethodChannel
 import android.content.Context
-import android.content.ContextWrapper
 import android.content.Intent
 import android.content.IntentFilter
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import android.os.Build
 import android.Manifest
 import android.content.pm.PackageManager
 import android.app.AlertDialog
-
+import android.provider.Telephony
 import android.telephony.SmsManager
-
+import android.content.BroadcastReceiver
+import android.util.Log
 class MainActivity: FlutterActivity() {
-	private val _permission_id = 10;
-	private val _channel = "ft_hangouts.com"
+	private val _permission_id = 10
+	private var isRegistered = false
 
-	override fun configureFlutterEngine(@NonNull flutterEngine: FlutterEngine) {
+	override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
 		super.configureFlutterEngine(flutterEngine)
-		MethodChannel(flutterEngine.dartExecutor.binaryMessenger, _channel).setMethodCallHandler {
-			call, result ->
-			when(call.method) {
-				"requestPermissionForSms" -> {
-					result.success(hasPermission())
-				}
-				"sendDirectSms" -> {
-					if(hasPermission()) {
-						val smsManager=SmsManager.getDefault();
-						smsManager.sendTextMessage(call.argument<String>("phone"),null,call.argument<String>("text"), null, null)
-					}
-				}
-				"smsReceived" -> {
-					if(hasPermission()) {
+        	val smsReceiver = object:EventChannel.StreamHandler,BroadcastReceiver(){
+        	    var eventSink: EventChannel.EventSink? = null
+        	    override fun onListen(arguments: Any?, events: EventChannel.EventSink?) {
+        	        eventSink = events
+        	    }
 
+        	    override fun onCancel(arguments: Any?) {
+        	        eventSink = null
+        	    }
+
+        	    override fun onReceive(p0: Context?, p1: Intent?) {
+									hasPermission()
+        	        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT){
+        	            for (sms in Telephony.Sms.Intents.getMessagesFromIntent(p1)) {
+        	                eventSink?.success(sms.displayMessageBody)
+													Log.d("TAG","message received");
+													Log.d("TAG",sms.displayMessageBody);
+        	            }
+        	        }
+        	    }
+        	}
+        	registerReceiver(smsReceiver,IntentFilter("android.provider.Telephony.SMS_RECEIVED"))
+        	EventChannel(flutterEngine.dartExecutor.binaryMessenger,"com.ft_hangouts/smsReceived")
+        	    .setStreamHandler(smsReceiver)
+
+				MethodChannel(flutterEngine.dartExecutor.binaryMessenger,"com.ft_hangouts/sms").setMethodCallHandler{
+					call, result ->
+					when(call.method) {
+						"checkPermission" -> {
+							Log.d("TAG","HERE2")
+							result.success(hasPermission())
+						}
+						"sendDirectSms" -> {
+								Log.d("TAG","wtf, in sendSMS")
+						}
 					}
 				}
-				else -> result.notImplemented()
-			}
-		}
 	}
 
 	private fun  hasPermission(): Boolean {
@@ -50,15 +69,7 @@ class MainActivity: FlutterActivity() {
                     return true
         else
         {
-						if(!activity.shouldShowRequestPermissionRationale(Manifest.permission.RECEIVE_SMS)) {
-							ActivityCompat.requestPermissions(this,arrayOf(Manifest.permission.RECEIVE_SMS,Manifest.permission.SEND_SMS, Manifest.permission.BROADCAST_SMS), _permission_id)
-            	if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECEIVE_SMS) == PackageManager.PERMISSION_GRANTED)
-              	return true
-						} else {
-							val alertDialogBuilder = AlertDialog.Builder(this)
-							alertDialogBuilder.setTitle("Permission Needed")
-              alertDialogBuilder.setMessage("Permission is needed to access files from your device...")
-						}
+					ActivityCompat.requestPermissions(this,arrayOf(Manifest.permission.RECEIVE_SMS,Manifest.permission.SEND_SMS, Manifest.permission.BROADCAST_SMS), _permission_id)
         }
         return false
     }
