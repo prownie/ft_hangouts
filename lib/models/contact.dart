@@ -9,7 +9,7 @@ class Contact {
 
   Contact(
       {required final String this.firstName,
-      required final String this.lastName,
+      final String? this.lastName,
       required final String this.phoneNumber,
       final this.id});
 

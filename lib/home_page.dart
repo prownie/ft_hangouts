@@ -25,7 +25,7 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     _widgetOptions = <Widget>[
-      conversationsPage(),
+      conversationsPage(updater),
       contactsPage(updater),
       profile(),
     ];
@@ -33,7 +33,10 @@ class _HomePageState extends State<HomePage> {
     sms_controller.initPermission();
     sms_controller().smsReceived().listen((event) {
       print('in smsReceived');
-      print('in sms received, value = ${event}');
+      print(event);
+      print('in sms received, value = ${event['message']}');
+      print('in sms received, sender = ${event['sender']}');
+      sms_controller.storeMessageInDb(event['message'], event['sender']);
     });
   }
 

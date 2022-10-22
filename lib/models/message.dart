@@ -4,13 +4,13 @@ class Message {
   final String message;
   final int contactId;
   final int mine;
-  final int datetime;
+  final int? datetime;
 
   Message({
     required final String this.message,
     required final int this.contactId,
     required final int this.mine,
-    required final int this.datetime,
+    final int? this.datetime,
   });
 
   Map<String, dynamic> toMap() {

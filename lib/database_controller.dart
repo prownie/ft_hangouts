@@ -39,16 +39,16 @@ class databaseController {
   Future _onCreate(Database db, int version) async {
     await db.execute('''CREATE TABLE Contact(
               id INTEGER PRIMARY KEY,
-              firstName TEXT,
-              lastName TEXT,
-              phoneNumber TEXT
+              firstName TEXT NOT NULL,
+              lastName TEXT NOT NULL,
+              phoneNumber TEXT NOT NULL
         )''');
     await db.execute('''CREATE TABLE Message(
             id INTEGER PRIMARY KEY,
             message TEXT NOT NULL,
             contactId INTEGER NOT NULL,
             mine INTEGER NOT NULL,
-            datetime INTEGER NOT NULL
+            datetime INTEGER DEFAULT (cast(strftime('%s','now') as int))
           )''');
   }
 
@@ -62,14 +62,30 @@ class databaseController {
     return await db.insert('Contact', row);
   }
 
-  Future<int> insertMessage(Map<String, dynamic> row) async {
+  Future<int> insertMessage(Message message) async {
     Database db = await instance.db as Database;
+    Map<String, dynamic> row = {
+      'message': message.message,
+      'contactId': message.contactId,
+      'mine': message.mine,
+    };
     return await db.insert('Message', row);
   }
 
   Future<List<Map<String, dynamic>>> getContacts() async {
     Database db = await instance.db as Database;
     return await db.query('Contact');
+  }
+
+  Future<List<Map<String, dynamic>>> getConversations() async {
+    Database db = await instance.db as Database;
+    return await db.rawQuery('''SELECT c.firstName, c.lastName, c.id as id, m.*
+      FROM Contact c
+      INNER JOIN (
+       SELECT message, MAX(datetime), contactId
+       FROM Message
+       GROUP BY contactId
+      ) m ON c.id=m.contactId''');
   }
 
   Future<dynamic> updateContact(Contact contact) async {
@@ -95,6 +111,16 @@ class databaseController {
         columns: ['id', 'firstName', 'lastName', 'phoneNumber'],
         where: 'id = ?',
         whereArgs: ids,
+        limit: 1);
+  }
+
+  Future<dynamic> getContactFromPhoneNumber(String phoneNumber) async {
+    List<String> phoneNumbers = [phoneNumber];
+    Database db = await instance.db as Database;
+    return await db.query('Contact',
+        columns: ['id', 'firstName', 'lastName', 'phoneNumber'],
+        where: 'phoneNumber = ?',
+        whereArgs: phoneNumbers,
         limit: 1);
   }
 

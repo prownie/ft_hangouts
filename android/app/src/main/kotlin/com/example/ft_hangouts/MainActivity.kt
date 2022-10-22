@@ -38,9 +38,10 @@ class MainActivity: FlutterActivity() {
 									hasPermission()
         	        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT){
         	            for (sms in Telephony.Sms.Intents.getMessagesFromIntent(p1)) {
-        	                eventSink?.success(sms.displayMessageBody)
+        	                val data = mapOf("message" to sms.displayMessageBody, "sender" to sms.getDisplayOriginatingAddress());
+													eventSink?.success(data);
 													Log.d("TAG","message received");
-													Log.d("TAG",sms.displayMessageBody);
+													Log.d("TAG",sms.getDisplayOriginatingAddress());
         	            }
         	        }
         	    }

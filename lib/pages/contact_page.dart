@@ -74,11 +74,6 @@ class contactPageState extends State<contactPage> {
               const SizedBox(height: 24),
               TextFormField(
                 controller: lastNameController,
-                validator: (value) {
-                  if (value == null || value.isEmpty)
-                    return AppLocalizations.of(context)!.lastNameEmpty;
-                  return null;
-                },
                 decoration: InputDecoration(
                     labelText: AppLocalizations.of(context)!.lastName,
                     border: OutlineInputBorder(),
@@ -112,6 +107,7 @@ class contactPageState extends State<contactPage> {
                           .updateContact(updatedContact)
                           .then((value) {
                         initState();
+                        widget.updater.value = !widget.updater.value;
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
                               content: Text(
