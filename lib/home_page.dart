@@ -17,6 +17,8 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final ValueNotifier<bool> updater = ValueNotifier(false);
+  final ValueNotifier<bool> smsUpdater = ValueNotifier(false);
+
   int _selectedIndex = 0;
   static const TextStyle optionStyle =
       TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
@@ -25,18 +27,14 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     _widgetOptions = <Widget>[
-      conversationsPage(updater),
+      conversationsPage(smsUpdater),
       contactsPage(updater),
       profile(),
     ];
     _selectedIndex = _selectedIndex;
     sms_controller.initPermission();
     sms_controller().smsReceived().listen((event) {
-      print('in smsReceived');
-      print(event);
-      print('in sms received, value = ${event['message']}');
-      print('in sms received, sender = ${event['sender']}');
-      sms_controller.storeMessageInDb(event['message'], event['sender']);
+      sms_controller.storeMessageInDb(event['message'], event['sender'], 0);
     });
   }
 

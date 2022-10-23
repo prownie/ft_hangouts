@@ -6,19 +6,22 @@ class Contact {
   final String? lastName;
   final String? phoneNumber;
   final int? id;
+  final int? unreadMessages;
 
   Contact(
-      {required final String this.firstName,
-      final String? this.lastName,
-      required final String this.phoneNumber,
-      final this.id});
+      {required String this.firstName,
+      String? this.lastName,
+      required String this.phoneNumber,
+      this.id,
+      this.unreadMessages});
 
   Map<String, dynamic> toMap() {
     return {
       'firstName': firstName,
       'lastName': lastName,
       'phoneNumber': phoneNumber,
-      'id': id
+      'id': id,
+      'unreadMessages': unreadMessages
     };
   }
 }

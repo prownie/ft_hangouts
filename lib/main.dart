@@ -10,7 +10,6 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   globalColor.value = await sharedPrefHelper.getFavColor();
   globalLocale.value = await sharedPrefHelper.getFavLocale();
-  print(globalLocale.value);
   runApp(MyApp());
 }
 

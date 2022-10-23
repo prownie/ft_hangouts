@@ -21,12 +21,9 @@ class sms_controller {
     } catch (e) {}
   }
 
-  static bool storeMessageInDb(String content, String sender) {
-    sender = '0' + sender;
-    var rep = {
-      'sender': '',
-      'message': '',
-    };
+  static Future<void> storeMessageInDb(
+      String content, String sender, int mine) async {
+    if (sender[0] != '0') sender = '0' + sender;
     try {
       databaseController.instance
           .getContactFromPhoneNumber(sender)
@@ -34,7 +31,7 @@ class sms_controller {
         //contact found, store message with his Id
         if (value.isNotEmpty) {
           databaseController.instance.insertMessage(
-              Message(message: content, mine: 0, contactId: value[0]['id']));
+              Message(message: content, mine: mine, contactId: value[0]['id']));
         } else {
           databaseController.instance
               .insertContact(new Contact(
@@ -42,16 +39,19 @@ class sms_controller {
               .then((value) {
             if (value != 0) {
               databaseController.instance.insertMessage(
-                  new Message(message: content, mine: 0, contactId: value));
+                  new Message(message: content, mine: mine, contactId: value));
             }
           });
+        }
+        //sms from someone, update unread messages
+        if (mine == 0) {
+          databaseController.instance
+              .updateUnreadMessages(value[0]['id'], false);
         }
       });
     } catch (e) {
       print(e);
-      return false;
     }
-    return true;
   }
 }
 

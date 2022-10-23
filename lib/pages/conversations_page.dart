@@ -6,11 +6,12 @@ import 'package:ft_hangouts/database_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:ft_hangouts/pages/conversation_page.dart';
 import '../utils/constants.dart';
+import '../main.dart';
 
 class conversationsPage extends StatefulWidget {
-  final ValueNotifier<bool> updater;
+  final ValueNotifier<bool> smsUpdater;
 
-  conversationsPage(this.updater);
+  conversationsPage(this.smsUpdater);
 
   @override
   State<conversationsPage> createState() => _conversationsPageState();
@@ -38,7 +39,7 @@ class _conversationsPageState extends State<conversationsPage> {
   @override
   Widget build(BuildContext context) {
     return ValueListenableBuilder(
-        valueListenable: widget.updater,
+        valueListenable: widget.smsUpdater,
         builder: ((context, value, child) {
           return FutureBuilder(
               future: getConversations(),
@@ -55,12 +56,11 @@ class _conversationsPageState extends State<conversationsPage> {
                                   context,
                                   MaterialPageRoute(
                                     builder: (context) => conversationPage(
-                                        conversation['id'].toString(),
-                                        widget.updater),
+                                        conversation['id'], widget.smsUpdater),
                                   ),
                                 );
                               },
-                              splashColor: Constants.Blue,
+                              splashColor: globalColor.value.shade500,
                               child: Container(
                                 padding: const EdgeInsets.only(
                                     left: 30, right: 10, top: 15),
@@ -96,8 +96,7 @@ class _conversationsPageState extends State<conversationsPage> {
                                                               'firstName'] +
                                                           ' ' +
                                                           conversation[
-                                                              'lastName'] +
-                                                          'iqdbbveytewvd uweqwdeqdwedewdwedwedwedewdewdduwdyew',
+                                                              'lastName'],
                                                       overflow:
                                                           TextOverflow.fade,
                                                       softWrap: false,
@@ -132,24 +131,35 @@ class _conversationsPageState extends State<conversationsPage> {
                                                           top: 30),
                                                   child: Text('16:10'),
                                                 ),
-                                                Container(
-                                                  padding:
-                                                      const EdgeInsets.all(5),
-                                                  decoration:
-                                                      const BoxDecoration(
-                                                    color: Constants.Blue,
-                                                    shape: BoxShape.circle,
-                                                  ),
-                                                  child: Text(
-                                                    '3',
-                                                    style: TextStyle(
-                                                      color: Colors.white,
-                                                      fontSize: 12,
-                                                      fontWeight:
-                                                          FontWeight.w500,
+                                                if (conversation[
+                                                        'unreadMessages'] !=
+                                                    0)
+                                                  Container(
+                                                    padding:
+                                                        const EdgeInsets.all(5),
+                                                    decoration: BoxDecoration(
+                                                      color: globalColor
+                                                          .value.shade900,
+                                                      shape: BoxShape.circle,
                                                     ),
+                                                    child: Text(
+                                                      conversation[
+                                                              'unreadMessages']
+                                                          .toString(),
+                                                      style: TextStyle(
+                                                        color: Colors.white,
+                                                        fontSize: 12,
+                                                        fontWeight:
+                                                            FontWeight.w500,
+                                                      ),
+                                                    ),
+                                                  )
+                                                else
+                                                  Container(
+                                                    padding:
+                                                        const EdgeInsets.all(
+                                                            12),
                                                   ),
-                                                ),
                                               ],
                                             )
                                           ]),

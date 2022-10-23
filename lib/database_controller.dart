@@ -41,7 +41,8 @@ class databaseController {
               id INTEGER PRIMARY KEY,
               firstName TEXT NOT NULL,
               lastName TEXT NOT NULL,
-              phoneNumber TEXT NOT NULL
+              phoneNumber TEXT NOT NULL,
+              unreadMessages INTEGER DEFAULT 0
         )''');
     await db.execute('''CREATE TABLE Message(
             id INTEGER PRIMARY KEY,
@@ -79,7 +80,8 @@ class databaseController {
 
   Future<List<Map<String, dynamic>>> getConversations() async {
     Database db = await instance.db as Database;
-    return await db.rawQuery('''SELECT c.firstName, c.lastName, c.id as id, m.*
+    return await db
+        .rawQuery('''SELECT c.firstName, c.lastName, c.id, c.unreadMessages, m.*
       FROM Contact c
       INNER JOIN (
        SELECT message, MAX(datetime), contactId
@@ -88,12 +90,19 @@ class databaseController {
       ) m ON c.id=m.contactId''');
   }
 
+  Future<List<Map<String, dynamic>>> getConversationWithContact(
+      int contactId) async {
+    Database db = await instance.db as Database;
+    return await db.rawQuery('''
+    SELECT * FROM Message WHERE contactId=?''', [contactId]);
+  }
+
   Future<dynamic> updateContact(Contact contact) async {
     Map<String, dynamic> row = {
       'id': contact.id,
       'firstName': contact.firstName,
       'lastName': contact.lastName,
-      'phoneNumber': contact.phoneNumber,
+      'phoneNumber': contact.phoneNumber
     };
     Database db = await instance.db as Database;
     db.update('Contact', row, where: 'id = ?', whereArgs: [contact.id]);
@@ -104,11 +113,33 @@ class databaseController {
     db.delete('Contact', where: 'id = ?', whereArgs: [contact.id]);
   }
 
+  Future<dynamic> updateUnreadMessages(
+      int contactId, bool resetUnreadMessages) async {
+    Database db = await instance.db as Database;
+    if (!resetUnreadMessages) {
+      db.rawUpdate('''
+      UPDATE Contact
+      SET unreadMessages = unreadMessages + 1
+      WHERE id = ?''', [contactId.toString()]);
+    } else {
+      db.rawUpdate('''
+      UPDATE Contact
+      SET unreadMessages = 0
+      WHERE id = ?''', [contactId.toString()]);
+    }
+  }
+
   Future<dynamic> getContactFromId(String id) async {
     List<String> ids = [id];
     Database db = await instance.db as Database;
     return await db.query('Contact',
-        columns: ['id', 'firstName', 'lastName', 'phoneNumber'],
+        columns: [
+          'id',
+          'firstName',
+          'lastName',
+          'phoneNumber',
+          'unreadMessages'
+        ],
         where: 'id = ?',
         whereArgs: ids,
         limit: 1);
@@ -118,25 +149,15 @@ class databaseController {
     List<String> phoneNumbers = [phoneNumber];
     Database db = await instance.db as Database;
     return await db.query('Contact',
-        columns: ['id', 'firstName', 'lastName', 'phoneNumber'],
+        columns: [
+          'id',
+          'firstName',
+          'lastName',
+          'phoneNumber',
+          'unreadMessages'
+        ],
         where: 'phoneNumber = ?',
         whereArgs: phoneNumbers,
         limit: 1);
-  }
-
-  CreationsForTest() {
-    insertContact(new Contact(
-        firstName: 'Robin', lastName: 'Pichon', phoneNumber: '0123456789'));
-    insertContact(new Contact(
-        firstName: 'Prownie', lastName: 'Teuteu', phoneNumber: '9876543210'));
-    insertContact(new Contact(
-        firstName: 'Thomas', lastName: 'Grangeot', phoneNumber: '9876543210'));
-    insertContact(new Contact(
-        firstName: 'jdel', lastName: 'ros', phoneNumber: '9876543210'));
-    insertContact(new Contact(
-        firstName: 'edep', lastName: 'auw', phoneNumber: '9876543210'));
-    insertContact(new Contact(
-        firstName: 'fr', lastName: 'frey', phoneNumber: '9876543210'));
-    print('created contacts');
   }
 }
