@@ -3,7 +3,7 @@ import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/ticker_provider.dart';
 import 'package:flutter/material.dart';
-import 'package:ft_hangouts/database_controller.dart';
+import 'package:ft_hangouts/utils/database_controller.dart';
 import 'package:ft_hangouts/models/contact.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -27,7 +27,7 @@ class contactPageState extends State<contactPage> {
   @override
   void initState() {
     databaseController.instance
-        .getContactFromId(widget.contactId!)
+        .getContactFromId(widget.contactId)
         .then((value) {
       setState(() {
         _contact = new Contact(

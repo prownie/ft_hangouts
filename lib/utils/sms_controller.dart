@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'package:flutter/services.dart';
-import 'package:ft_hangouts/database_controller.dart';
+import 'package:ft_hangouts/utils/database_controller.dart';
 import '../models/models.dart';
 
 class sms_controller {
@@ -21,36 +21,29 @@ class sms_controller {
     } catch (e) {}
   }
 
-  static Future<void> storeMessageInDb(
+  static Future<void> storeMessageInDb (
       String content, String sender, int mine) async {
     if (sender[0] != '0') sender = '0' + sender;
-    try {
-      databaseController.instance
-          .getContactFromPhoneNumber(sender)
-          .then((value) {
-        //contact found, store message with his Id
-        if (value.isNotEmpty) {
-          databaseController.instance.insertMessage(
-              Message(message: content, mine: mine, contactId: value[0]['id']));
-        } else {
-          databaseController.instance
+    final contact = await databaseController.instance.getContactFromPhoneNumber(sender);
+    if (contact.isNotEmpty) {
+       await databaseController.instance.insertMessage(
+              Message(message: content, mine: mine, contactId: contact[0]['id']));
+          if (mine == 0) {
+            await databaseController.instance
+              .updateUnreadMessages(contact[0]['id'], false);
+        }
+    } else {
+      final contactId = await databaseController.instance
               .insertContact(new Contact(
-                  firstName: sender, lastName: '', phoneNumber: sender))
-              .then((value) {
-            if (value != 0) {
-              databaseController.instance.insertMessage(
-                  new Message(message: content, mine: mine, contactId: value));
+                  firstName: sender, lastName: '', phoneNumber: sender));
+            if (contactId != 0) {
+              await databaseController.instance.insertMessage(
+                  new Message(message: content, mine: mine, contactId: contactId));
+              if (mine == 0) {
+                await databaseController.instance
+                    .updateUnreadMessages(contactId, false);
+              }
             }
-          });
-        }
-        //sms from someone, update unread messages
-        if (mine == 0) {
-          databaseController.instance
-              .updateUnreadMessages(value[0]['id'], false);
-        }
-      });
-    } catch (e) {
-      print(e);
     }
   }
 }

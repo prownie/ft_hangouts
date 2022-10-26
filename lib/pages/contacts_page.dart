@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
-import 'package:ft_hangouts/database_controller.dart';
+import 'package:ft_hangouts/utils/database_controller.dart';
 import '../utils/constants.dart';
 import '../pages/contact_page.dart';
 
@@ -61,7 +61,7 @@ class _contactsPageState extends State<contactsPage> {
                                         shape: BoxShape.circle,
                                         image: DecorationImage(
                                           image: AssetImage(
-                                              'images/avatar/profile-placeholder.jpg'),
+                                              'assets/images/avatar/profile-placeholder.jpg'),
                                           fit: BoxFit.cover,
                                         ),
                                       ),

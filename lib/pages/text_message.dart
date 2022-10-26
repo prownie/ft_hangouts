@@ -79,10 +79,10 @@ class TextMessage extends StatelessWidget {
                       left: 5,
                     ),
               padding: const EdgeInsets.all(6),
-              height: 55,
+              constraints: BoxConstraints(minHeight: 55),
               decoration: isMine == 1
                   ? BoxDecoration(
-                      color: globalColor.value.shade900,
+                      color: globalColor.value.shade500,
                       borderRadius: BorderRadius.only(
                         topLeft: Radius.circular(12),
                         topRight: Radius.circular(12),
@@ -90,7 +90,7 @@ class TextMessage extends StatelessWidget {
                       ),
                     )
                   : BoxDecoration(
-                      color: Colors.grey[300],
+                      color: globalColor.value.shade100,
                       borderRadius: BorderRadius.only(
                         topLeft: Radius.circular(15),
                         topRight: Radius.circular(15),
@@ -101,7 +101,7 @@ class TextMessage extends StatelessWidget {
                 message,
                 style: TextStyle(
                   color:
-                      isMine == 0 ? globalColor.value.shade900 : Colors.black,
+                      isMine == 0 ? Colors.black : Colors.black,
                   fontSize: 12,
                   fontWeight: FontWeight.w500,
                 ),

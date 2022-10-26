@@ -40,8 +40,6 @@ class MainActivity: FlutterActivity() {
         	            for (sms in Telephony.Sms.Intents.getMessagesFromIntent(p1)) {
         	                val data = mapOf("message" to sms.displayMessageBody, "sender" to sms.getDisplayOriginatingAddress());
 													eventSink?.success(data);
-													Log.d("TAG","message received");
-													Log.d("TAG",sms.getDisplayOriginatingAddress());
         	            }
         	        }
         	    }
@@ -54,7 +52,6 @@ class MainActivity: FlutterActivity() {
 					call, result ->
 					when(call.method) {
 						"checkPermission" -> {
-							Log.d("TAG","HERE2")
 							result.success(hasPermission())
 						}
 						"sendDirectSms" -> {

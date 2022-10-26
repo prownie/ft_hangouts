@@ -18,5 +18,6 @@
     "createContact": "Créer contact",
     "changeThemeColor": "Sélectionner la couleur souhaitée pour changer le thème",
 		"changeLocale": "Langage",
-		"phoneLanguage": "Langage du téléphone"
+		"phoneLanguage": "Langage du téléphone",
+	"addPicture": "Ajouter photo"
 }

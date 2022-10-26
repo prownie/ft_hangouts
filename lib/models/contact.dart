@@ -7,13 +7,15 @@ class Contact {
   final String? phoneNumber;
   final int? id;
   final int? unreadMessages;
+  final String? profilePicture;
 
   Contact(
       {required String this.firstName,
       String? this.lastName,
       required String this.phoneNumber,
       this.id,
-      this.unreadMessages});
+      this.unreadMessages,
+      this.profilePicture});
 
   Map<String, dynamic> toMap() {
     return {

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:ft_hangouts/database_controller.dart';
+import 'package:ft_hangouts/utils/database_controller.dart';
 import 'dart:async';
 import 'package:flutter/services.dart';
 import 'models/models.dart';
@@ -16,8 +16,8 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  final ValueNotifier<bool> updater = ValueNotifier(false);
-  final ValueNotifier<bool> smsUpdater = ValueNotifier(false);
+  ValueNotifier<bool> updater = ValueNotifier(false);
+  ValueNotifier<bool> smsUpdater = ValueNotifier(false);
 
   int _selectedIndex = 0;
   static const TextStyle optionStyle =
@@ -34,7 +34,11 @@ class _HomePageState extends State<HomePage> {
     _selectedIndex = _selectedIndex;
     sms_controller.initPermission();
     sms_controller().smsReceived().listen((event) {
-      sms_controller.storeMessageInDb(event['message'], event['sender'], 0);
+      sms_controller.storeMessageInDb(event['message'], event['sender'], 0).then((value) {
+        updater.value = !updater.value;
+        smsUpdater.value = !smsUpdater.value;
+        print('smsupdater Updated');
+      });
     });
   }
 

@@ -1,6 +1,6 @@
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
-import 'package:ft_hangouts/database_controller.dart';
+import 'package:ft_hangouts/utils/database_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:ft_hangouts/utils/shared_preferences.dart';
 import '../main.dart';

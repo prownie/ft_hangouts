@@ -1,12 +1,11 @@
-import 'package:flutter/src/animation/animation_controller.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/src/widgets/ticker_provider.dart';
 import 'package:flutter/material.dart';
-import 'package:ft_hangouts/database_controller.dart';
+import 'package:ft_hangouts/main.dart';
+import 'package:ft_hangouts/utils/database_controller.dart';
 import 'package:ft_hangouts/models/contact.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-
+import 'dart:io';
+import 'package:ft_hangouts/utils/utils.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 class createContact extends StatefulWidget {
   final ValueNotifier<bool> updater;
 
@@ -21,9 +20,9 @@ class createContactState extends State<createContact> {
   final firstNameController = TextEditingController();
   final lastNameController = TextEditingController();
   final phoneNumberController = TextEditingController();
-
-  @override
-  void initState() {}
+  String imagePath = 'assets/images/avatar/profile-placeholder.jpg';
+  String? base64image;
+  File? imagePicked;
 
   @override
   Widget build(BuildContext context) {
@@ -35,13 +34,90 @@ class createContactState extends State<createContact> {
         ),
         title: Text(AppLocalizations.of(context)!.createNewContact),
       ),
-      body: Form(
+      body:
+        Form(
         key: _formKey,
-        child: ListView(
-          padding: EdgeInsets.symmetric(horizontal: 32),
+        child: SingleChildScrollView(
+          padding: EdgeInsets.symmetric(horizontal: 32, vertical: 15),
           physics: BouncingScrollPhysics(),
-          children: [
-            const SizedBox(height: 24),
+          child: Column(children:[
+            imagePicked != null
+                    ? CircleAvatar(
+                        radius: 80,
+                        backgroundColor: globalColor.value.shade900,
+                        child: CircleAvatar(
+                          backgroundImage: Image.file(
+                              imagePicked!,
+                              width: 150.0,
+                              height: 150.0,
+                              fit: BoxFit.fitHeight,
+                          ).image,
+                          radius:75)):
+                        CircleAvatar(
+                          radius: 80,
+                          backgroundImage: Image.asset('assets/images/avatar/profile-placeholder.jpg').image,
+                        ),
+            const SizedBox(height:5),
+            imagePicked == null ?
+            SizedBox(
+              width:160,
+              height:30,
+              child: ElevatedButton(
+                onPressed: () async {
+                  File? croppedImage = await imageHelper.uploadImage();
+                  if (croppedImage != null) {
+                    setState(() {
+                      imagePicked = croppedImage;
+                    });
+                  }
+                },
+                child: Text(AppLocalizations.of(context)!.addPicture),
+             ),
+            ) : 
+            SizedBox(
+              width:180,
+              height:30,
+              child: Row(children: [
+                SizedBox(
+                  width:135,
+                  height:30,
+                  child: ElevatedButton(
+                   onPressed: () async {
+                     File? croppedImage = await imageHelper.uploadImage();
+                     if (croppedImage != null) {
+                       setState(() {
+                         imagePicked = croppedImage;
+                       });
+                     }
+                   },
+                   child: Text(AppLocalizations.of(context)!.addPicture),
+                   ),  
+                ),
+                SizedBox(width:10),
+                SizedBox(
+                  width:35,
+                  height:30,
+                  child: Ink(
+                    decoration: ShapeDecoration(
+                      color: globalColor.value.shade900,
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.0)),
+                    ),
+                    child: IconButton(
+                    padding: const EdgeInsets.all(4.0),
+                    onPressed: () async {
+                       setState(() {
+                         imagePicked = null;
+                       });
+                   },
+                   color: Colors.white,
+                   icon: Icon(Icons.delete),
+                 )
+                  )
+                ),
+             ]),
+             
+            ),
+            const SizedBox(height: 20),
             TextFormField(
               controller: firstNameController,
               validator: (value) {
@@ -54,7 +130,7 @@ class createContactState extends State<createContact> {
                 border: OutlineInputBorder(),
               ),
             ),
-            const SizedBox(height: 24),
+            const SizedBox(height: 20),
             TextFormField(
               controller: lastNameController,
               validator: (value) {
@@ -67,7 +143,7 @@ class createContactState extends State<createContact> {
                 border: OutlineInputBorder(),
               ),
             ),
-            const SizedBox(height: 24),
+            const SizedBox(height: 20),
             TextFormField(
               controller: phoneNumberController,
               validator: (value) {
@@ -82,7 +158,7 @@ class createContactState extends State<createContact> {
                 border: OutlineInputBorder(),
               ),
             ),
-            const SizedBox(height: 24),
+            const SizedBox(height: 20),
             ElevatedButton(
                 onPressed: () {
                   if (_formKey.currentState!.validate()) {
@@ -90,6 +166,7 @@ class createContactState extends State<createContact> {
                       firstName: firstNameController.text,
                       lastName: lastNameController.text,
                       phoneNumber: phoneNumberController.text,
+                      profilePicture: base64image
                     );
                     databaseController.instance
                         .insertContact(updatedContact)
@@ -107,7 +184,7 @@ class createContactState extends State<createContact> {
                 child: Text(AppLocalizations.of(context)!.createContact)),
           ],
         ),
-      ),
+      ),),
     );
   }
 }

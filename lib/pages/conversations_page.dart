@@ -2,7 +2,7 @@ import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/ticker_provider.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:ft_hangouts/database_controller.dart';
+import 'package:ft_hangouts/utils/database_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:ft_hangouts/pages/conversation_page.dart';
 import '../utils/constants.dart';
@@ -18,22 +18,29 @@ class conversationsPage extends StatefulWidget {
 }
 
 class _conversationsPageState extends State<conversationsPage> {
-  List<Map<String, dynamic>>? _conversationsList;
 
-  Future<void> getConversations() async {
-    databaseController.instance.getConversations().then((value) {
-      List<Map<String, dynamic>> tmp = [];
-      for (final val in value) {
-        tmp.add(Map.of(val));
+  Future<List<Map<String, dynamic>>> getData() async {
+    return (await getConversations());
+  }
+
+  Future<List<Map<String, dynamic>>> getConversations() async {
+    List<Map<String, dynamic>> convList = await databaseController.instance.getConversations();
+    return (await conversationsPrevisulation(convList));
+  }
+
+  Future<List<Map<String, dynamic>>> conversationsPrevisulation(List<Map<String, dynamic>> convList) async {
+    // need to make a copy because saflite return are readonly
+    List<Map<String, dynamic>> tmp = [];
+    for (final conv in convList) {
+      tmp.add(Map.of(conv));
+    }
+    for (final conv in tmp) {
+      final indexNewLine = conv['message'].indexOf('\n');
+      if (indexNewLine != -1) {
+        conv['message'] = conv['message'].substring(0, indexNewLine);
       }
-      _conversationsList = tmp;
-      for (final conv in _conversationsList!) {
-        final indexNewLine = conv['message'].indexOf('\n');
-        if (indexNewLine != -1) {
-          conv['message'] = conv['message'].substring(0, indexNewLine);
-        }
-      }
-    });
+    }
+    return tmp;
   }
 
   @override
@@ -42,14 +49,14 @@ class _conversationsPageState extends State<conversationsPage> {
         valueListenable: widget.smsUpdater,
         builder: ((context, value, child) {
           return FutureBuilder(
-              future: getConversations(),
-              builder: (BuildContext context, toto) {
-                if (toto.connectionState != ConnectionState.done) {
+              future: getData(),
+              builder: (BuildContext context, snapshot) {
+                if (snapshot.connectionState != ConnectionState.done) {
                   return SizedBox.shrink();
                 } else {
                   return SingleChildScrollView(
                     child: Column(
-                      children: _conversationsList?.map<Widget>((conversation) {
+                      children: snapshot.data?.map<Widget>((conversation) {
                             return InkWell(
                               onTap: () async {
                                 await Navigator.push(
@@ -58,7 +65,9 @@ class _conversationsPageState extends State<conversationsPage> {
                                     builder: (context) => conversationPage(
                                         conversation['id'], widget.smsUpdater),
                                   ),
-                                );
+                                ).then((value) {
+                                  widget.smsUpdater.value = !widget.smsUpdater.value;
+                                });
                               },
                               splashColor: globalColor.value.shade500,
                               child: Container(
@@ -74,7 +83,7 @@ class _conversationsPageState extends State<conversationsPage> {
                                         shape: BoxShape.circle,
                                         image: DecorationImage(
                                           image: AssetImage(
-                                              'images/avatar/profile-placeholder.jpg'),
+                                              'assets/images/avatar/profile-placeholder.jpg'),
                                           fit: BoxFit.cover,
                                         ),
                                       ),
@@ -132,8 +141,7 @@ class _conversationsPageState extends State<conversationsPage> {
                                                   child: Text('16:10'),
                                                 ),
                                                 if (conversation[
-                                                        'unreadMessages'] !=
-                                                    0)
+                                                        'unreadMessages'] > 0)
                                                   Container(
                                                     padding:
                                                         const EdgeInsets.all(5),
