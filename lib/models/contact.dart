@@ -7,7 +7,7 @@ class Contact {
   final String? phoneNumber;
   final int? id;
   final int? unreadMessages;
-  final String? profilePicture;
+  String? profilePicture;
 
   Contact(
       {required String this.firstName,
@@ -17,6 +17,10 @@ class Contact {
       this.unreadMessages,
       this.profilePicture});
 
+  void setProfilePicture(String newPP) {
+    this.profilePicture = newPP;
+  }
+  
   Map<String, dynamic> toMap() {
     return {
       'firstName': firstName,

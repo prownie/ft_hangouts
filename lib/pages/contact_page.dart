@@ -1,11 +1,9 @@
-import 'package:flutter/src/animation/animation_controller.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/src/widgets/ticker_provider.dart';
 import 'package:flutter/material.dart';
-import 'package:ft_hangouts/utils/database_controller.dart';
-import 'package:ft_hangouts/models/contact.dart';
+import '../utils/utils.dart';
+import 'package:ft_hangouts/models/models.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import '../main.dart';
+import 'dart:io';
 
 class contactPage extends StatefulWidget {
   final ValueNotifier<bool> updater;
@@ -23,7 +21,7 @@ class contactPageState extends State<contactPage> {
   final firstNameController = TextEditingController();
   final lastNameController = TextEditingController();
   final phoneNumberController = TextEditingController();
-
+  String? base64image;
   @override
   void initState() {
     databaseController.instance
@@ -34,10 +32,12 @@ class contactPageState extends State<contactPage> {
             id: value[0]['id'],
             firstName: value[0]['firstName'],
             lastName: value[0]['lastName'],
-            phoneNumber: value[0]['phoneNumber']);
+            phoneNumber: value[0]['phoneNumber'],
+            profilePicture: value[0]['profilePicture']);
         firstNameController.text = _contact!.firstName!;
         lastNameController.text = _contact!.lastName!;
         phoneNumberController.text = _contact!.phoneNumber!;
+        base64image = value[0]['profilePicture'];
       });
     });
   }
@@ -54,10 +54,29 @@ class contactPageState extends State<contactPage> {
             title: Text(_contact!.firstName! + ' ' + _contact!.lastName!)),
         body: Form(
           key: _formKey,
-          child: ListView(
+          child: SingleChildScrollView(
             padding: EdgeInsets.symmetric(horizontal: 32),
             physics: BouncingScrollPhysics(),
-            children: [
+            child: Column(children:[
+              GestureDetector(
+                onTap: () async {
+                     File? croppedImage = await imageHelper.uploadImage();
+                     if (croppedImage != null) {
+                       setState(() {
+                        var imagePicked = croppedImage;
+                         _contact!.setProfilePicture(imageHelper.base64String(imagePicked.readAsBytesSync()));
+                       });
+                     }
+                   },
+                child: CircleAvatar(
+                  radius:80,
+                  backgroundColor: globalColor.value.shade900,
+                  child: CircleAvatar(
+                    radius:75,
+                    backgroundImage: imageHelper.imageFromBase64String(_contact!.profilePicture!).image
+                  )
+                ),
+              ),
               const SizedBox(height: 24),
               TextFormField(
                 controller: firstNameController,
@@ -102,6 +121,7 @@ class contactPageState extends State<contactPage> {
                           firstName: firstNameController.text,
                           lastName: lastNameController.text,
                           phoneNumber: phoneNumberController.text,
+                          profilePicture: _contact!.profilePicture,
                           id: _contact?.id);
                       databaseController.instance
                           .updateContact(updatedContact)
@@ -174,7 +194,7 @@ class contactPageState extends State<contactPage> {
                   );
                 },
               )
-            ],
+            ],),
           ),
         ),
       );

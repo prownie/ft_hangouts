@@ -2,6 +2,7 @@ import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/material.dart';
 import 'package:ft_hangouts/utils/database_controller.dart';
+import 'package:ft_hangouts/utils/utils.dart';
 import '../models/contact.dart';
 import 'text_message.dart';
 import '../main.dart';
@@ -21,8 +22,8 @@ class conversationPage extends StatefulWidget {
 class _conversationPageState extends State<conversationPage> {
   List<Map<String, dynamic>>? _messages;
   Contact? _contactInfos;
-  String senderProfile = 'assets/images/avatar/profile-placeholder.jpg';
-  String receiverProfile = 'assets/images/avatar/profile-placeholder.jpg';
+  String? contactProfilePicture;
+  String? appUserProfilePicture;
 
   Future<void> getConversationWithContact() async {
     List<Map<String, dynamic>> msgList = await databaseController.instance.getConversationWithContact(widget.contactId);
@@ -53,7 +54,8 @@ class _conversationPageState extends State<conversationPage> {
       'message': 'localtest',
       'date': tmp[0]['date'],
       'time': tmp[0]['time'],
-      'mine': 1
+      'mine': 1,
+      'profilePicture': tmp[0]['profilePicture']
     });
     return tmp;
   }
@@ -94,21 +96,35 @@ class _conversationPageState extends State<conversationPage> {
                       body: Container(
                         padding: const EdgeInsets.symmetric(horizontal: 15),
                         child: SingleChildScrollView(
-                          child: Column(
-                            children: _messages?.map<Widget>((message) {
-                                  return TextMessage(
-                                      message: message['message'],
-                                      date: message['date'],
-                                      time: message['time'],
-                                      senderProfile: senderProfile,
-                                      isMine: message['mine']);
-                                  // const SizedBox(height: 15),
-                                }).toList() ??
-                                []
-                            ,
-                          ),
+                          child: Column(children: [
+                            Column(
+                              children: _messages?.map<Widget>((message)  {
+                                  print('hello');
+                                  print(message);
+                                    return TextMessage(
+                                        message: message['message'],
+                                        date: message['date'],
+                                        time: message['time'],
+                                        senderProfile: message['profilePicture'],
+                                        isMine: message['mine']);
+                                    // const SizedBox(height: 15),
+                                  }).toList() ??
+                                  []
+                              ,
+                            ),
+                            Row(
+                              children: [
+                                Expanded(child: TextFormField(
+                                  decoration: InputDecoration(
+                                    border: OutlineInputBorder()
+                                  )
+                                )),
+                                Icon(Icons.send_rounded)
+                              ],
+                            )
+                          ],
                         ),
-                      ));
+                      )));
                 }
               });
         }));

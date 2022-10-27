@@ -42,7 +42,7 @@ class databaseController {
               lastName TEXT NOT NULL,
               phoneNumber TEXT NOT NULL,
               unreadMessages INTEGER DEFAULT 0,
-              profilePicture TEXT DEFAULT 'assets/images/avatar/profile-placeholder.jpg'
+              profilePicture TEXT
         )''');
     await db.execute('''CREATE TABLE Message(
             id INTEGER PRIMARY KEY,
@@ -59,6 +59,7 @@ class databaseController {
       'firstName': contact.firstName,
       'lastName': contact.lastName,
       'phoneNumber': contact.phoneNumber,
+      'profilePicture': contact.profilePicture
     };
     return await db.insert('Contact', row);
   }
@@ -81,7 +82,7 @@ class databaseController {
   Future<List<Map<String, dynamic>>> getConversations() async {
     Database db = await instance.db as Database;
     return await db
-        .rawQuery('''SELECT c.firstName, c.lastName, c.id, c.unreadMessages, m.*
+        .rawQuery('''SELECT c.firstName, c.lastName, c.id, c.unreadMessages,c.profilePicture, m.*
       FROM Contact c
       INNER JOIN (
        SELECT message, MAX(datetime), contactId
@@ -94,7 +95,12 @@ class databaseController {
       int contactId) async {
     Database db = await instance.db as Database;
     return await db.rawQuery('''
-    SELECT * FROM Message WHERE contactId=? ORDER BY id ASC''', [contactId]);
+    SELECT * FROM Message m
+    INNER JOIN (
+      SELECT id,profilePicture
+      FROM Contact
+    ) c ON c.id=m.contactId
+    WHERE m.contactId=? ORDER BY id ASC''', [contactId]);
   }
 
   Future<dynamic> updateContact(Contact contact) async {
@@ -102,7 +108,8 @@ class databaseController {
       'id': contact.id,
       'firstName': contact.firstName,
       'lastName': contact.lastName,
-      'phoneNumber': contact.phoneNumber
+      'phoneNumber': contact.phoneNumber,
+      'profilePicture': contact.profilePicture
     };
     Database db = await instance.db as Database;
     db.update('Contact', row, where: 'id = ?', whereArgs: [contact.id]);
@@ -139,7 +146,8 @@ class databaseController {
           'firstName',
           'lastName',
           'phoneNumber',
-          'unreadMessages'
+          'unreadMessages',
+          'profilePicture'
         ],
         where: 'id = ?',
         whereArgs: ids,

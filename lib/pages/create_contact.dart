@@ -5,7 +5,8 @@ import 'package:ft_hangouts/models/contact.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'dart:io';
 import 'package:ft_hangouts/utils/utils.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
+
 class createContact extends StatefulWidget {
   final ValueNotifier<bool> updater;
 
@@ -46,17 +47,16 @@ class createContactState extends State<createContact> {
                         radius: 80,
                         backgroundColor: globalColor.value.shade900,
                         child: CircleAvatar(
-                          backgroundImage: Image.file(
-                              imagePicked!,
-                              width: 150.0,
-                              height: 150.0,
-                              fit: BoxFit.fitHeight,
-                          ).image,
+                          backgroundImage: 
+                              imageHelper.imageFromBase64String(base64image!).image,
                           radius:75)):
                         CircleAvatar(
                           radius: 80,
+                          backgroundColor: globalColor.value.shade900,
+                          child : CircleAvatar(
+                          radius: 75,
                           backgroundImage: Image.asset('assets/images/avatar/profile-placeholder.jpg').image,
-                        ),
+                        )),
             const SizedBox(height:5),
             imagePicked == null ?
             SizedBox(
@@ -68,6 +68,7 @@ class createContactState extends State<createContact> {
                   if (croppedImage != null) {
                     setState(() {
                       imagePicked = croppedImage;
+                      base64image = imageHelper.base64String(imagePicked!.readAsBytesSync());
                     });
                   }
                 },
@@ -87,6 +88,7 @@ class createContactState extends State<createContact> {
                      if (croppedImage != null) {
                        setState(() {
                          imagePicked = croppedImage;
+                         base64image = imageHelper.base64String(imagePicked!.readAsBytesSync());
                        });
                      }
                    },
@@ -160,13 +162,13 @@ class createContactState extends State<createContact> {
             ),
             const SizedBox(height: 20),
             ElevatedButton(
-                onPressed: () {
+                onPressed: () async {
                   if (_formKey.currentState!.validate()) {
                     Contact updatedContact = Contact(
                       firstName: firstNameController.text,
                       lastName: lastNameController.text,
                       phoneNumber: phoneNumberController.text,
-                      profilePicture: base64image
+                      profilePicture: base64image != null ? base64image : await imageHelper.base64placeHolder()
                     );
                     databaseController.instance
                         .insertContact(updatedContact)

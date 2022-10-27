@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../utils/constants.dart';
+import '../utils/utils.dart';
 import '../main.dart';
 
 class TextMessage extends StatelessWidget {
@@ -22,19 +22,14 @@ class TextMessage extends StatelessWidget {
       child: Row(
         children: [
           isMine == 0
-              ? Container(
-                  margin: const EdgeInsets.only(right: 5),
-                  width: 45,
-                  height: 45,
-                  decoration: BoxDecoration(
-                    color: Colors.black38,
-                    shape: BoxShape.circle,
-                    image: DecorationImage(
-                      image: AssetImage(senderProfile),
-                      fit: BoxFit.cover,
-                    ),
-                  ),
+              ? CircleAvatar(
+                radius:25,
+                backgroundColor: globalColor.value.shade900,
+                child: CircleAvatar(
+                  radius:22,
+                  backgroundImage: imageHelper.imageFromBase64String(senderProfile).image
                 )
+              )
               : SizedBox(
                   width: 62,
                   child: Column(
@@ -68,6 +63,7 @@ class TextMessage extends StatelessWidget {
                     ],
                   ),
                 ),
+          SizedBox(width:5),
           Expanded(
             child: Container(
               alignment: Alignment.centerLeft,
@@ -144,22 +140,14 @@ class TextMessage extends StatelessWidget {
                 )
               : Container(),
           isMine == 1
-              ? Container(
-                  margin: const EdgeInsets.only(
-                    left: 6,
-                    right: 10,
-                  ),
-                  width: 45,
-                  height: 45,
-                  decoration: BoxDecoration(
-                    color: Colors.black38,
-                    shape: BoxShape.circle,
-                    image: DecorationImage(
-                      image: AssetImage(senderProfile),
-                      fit: BoxFit.cover,
-                    ),
-                  ),
+              ? Row(children: [SizedBox(width:5),CircleAvatar(
+                radius:25,
+                backgroundColor: globalColor.value.shade900,
+                child: CircleAvatar(
+                  radius:22,
+                  backgroundImage: imageHelper.imageFromBase64String(senderProfile).image
                 )
+              )])
               : Container(),
         ],
       ),

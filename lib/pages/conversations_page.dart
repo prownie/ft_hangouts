@@ -1,11 +1,6 @@
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/src/widgets/ticker_provider.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:ft_hangouts/utils/database_controller.dart';
+import 'package:ft_hangouts/utils/utils.dart';
 import 'package:flutter/material.dart';
-import 'package:ft_hangouts/pages/conversation_page.dart';
-import '../utils/constants.dart';
+import 'package:ft_hangouts/pages/pages.dart';
 import '../main.dart';
 
 class conversationsPage extends StatefulWidget {
@@ -75,19 +70,15 @@ class _conversationsPageState extends State<conversationsPage> {
                                     left: 30, right: 10, top: 15),
                                 child: Row(
                                   children: [
-                                    Container(
-                                      margin: const EdgeInsets.only(right: 23),
-                                      width: 62,
-                                      height: 62,
-                                      decoration: const BoxDecoration(
-                                        shape: BoxShape.circle,
-                                        image: DecorationImage(
-                                          image: AssetImage(
-                                              'assets/images/avatar/profile-placeholder.jpg'),
-                                          fit: BoxFit.cover,
-                                        ),
-                                      ),
+                                    CircleAvatar(
+                                      radius:31,
+                                      backgroundColor: globalColor.value.shade900,
+                                      child: CircleAvatar(
+                                        radius:28,
+                                        backgroundImage: imageHelper.imageFromBase64String(conversation['profilePicture']).image
+                                      )
                                     ),
+                                    SizedBox(width:23),
                                     Expanded(
                                       child: Column(
                                         children: [

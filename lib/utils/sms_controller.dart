@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/services.dart';
 import 'package:ft_hangouts/utils/database_controller.dart';
 import '../models/models.dart';
+import 'utils.dart';
 
 class sms_controller {
   static const _streamChannel = EventChannel("com.ft_hangouts/smsReceived");
@@ -35,7 +36,7 @@ class sms_controller {
     } else {
       final contactId = await databaseController.instance
               .insertContact(new Contact(
-                  firstName: sender, lastName: '', phoneNumber: sender));
+                  firstName: sender, lastName: '', phoneNumber: sender, profilePicture: await imageHelper.base64placeHolder()));
             if (contactId != 0) {
               await databaseController.instance.insertMessage(
                   new Message(message: content, mine: mine, contactId: contactId));

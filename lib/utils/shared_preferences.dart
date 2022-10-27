@@ -20,7 +20,6 @@ class sharedPrefHelper {
     };
     Color test =
         Color.fromRGBO(prefColor.red, prefColor.green, prefColor.blue, 1);
-    print('value after get =${prefColor}');
     return MaterialColor(test.value, mapColor);
   }
 
