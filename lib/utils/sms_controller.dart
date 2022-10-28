@@ -22,6 +22,15 @@ class sms_controller {
     } catch (e) {}
   }
 
+  static Future<void> sendSms(String phone, String msg) async {
+    try {
+      await _methodChannel.invokeMethod("sendDirectSms",
+      <String,dynamic>{"phone": phone,"msg":msg});
+    } catch (e) {
+      print("Error happend during sms send"+e.toString());
+    }
+  }
+
   static Future<void> storeMessageInDb (
       String content, String sender, int mine) async {
     if (sender[0] != '0') sender = '0' + sender;

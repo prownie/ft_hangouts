@@ -1,13 +1,20 @@
 import 'package:flutter/material.dart';
 import 'home_page.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'utils/shared_preferences.dart';
+import 'utils/utils.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter/services.dart';
 
 ValueNotifier<MaterialColor> globalColor = ValueNotifier(Colors.grey);
 ValueNotifier<String> globalLocale = ValueNotifier("");
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown,
+    DeviceOrientation.landscapeLeft,
+    DeviceOrientation.landscapeRight,
+  ]);
   globalColor.value = await sharedPrefHelper.getFavColor();
   globalLocale.value = await sharedPrefHelper.getFavLocale();
   runApp(MyApp());

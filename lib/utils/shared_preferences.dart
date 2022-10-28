@@ -63,4 +63,15 @@ class sharedPrefHelper {
 
     return "";
   }
+
+  static Future<String> getFavProfilePicture() async {
+    final prefs = await SharedPreferences.getInstance();
+    String profilePicture = prefs.getString("profilePicture") ?? "";
+    return profilePicture;
+  }
+
+  static Future<void> setFavProfilePicture(String profilePicture) async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setString('profilePicture',profilePicture);
+  }
 }

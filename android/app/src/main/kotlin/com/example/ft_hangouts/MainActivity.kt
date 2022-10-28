@@ -48,17 +48,19 @@ class MainActivity: FlutterActivity() {
         	EventChannel(flutterEngine.dartExecutor.binaryMessenger,"com.ft_hangouts/smsReceived")
         	    .setStreamHandler(smsReceiver)
 
-				MethodChannel(flutterEngine.dartExecutor.binaryMessenger,"com.ft_hangouts/sms").setMethodCallHandler{
-					call, result ->
-					when(call.method) {
-						"checkPermission" -> {
-							result.success(hasPermission())
-						}
-						"sendDirectSms" -> {
-								Log.d("TAG","wtf, in sendSMS")
-						}
+			MethodChannel(flutterEngine.dartExecutor.binaryMessenger,"com.ft_hangouts/sms").setMethodCallHandler{
+				call, result ->
+				when(call.method) {
+					"checkPermission" -> {
+						result.success(hasPermission())
+					}
+					"sendDirectSms" -> {
+						val num = call.argument<String>("phone")
+                		val msg = call.argument<String>("msg")
+                		sendSMS(num, msg, result)
 					}
 				}
+			}
 	}
 
 	private fun  hasPermission(): Boolean {
@@ -70,6 +72,17 @@ class MainActivity: FlutterActivity() {
 					ActivityCompat.requestPermissions(this,arrayOf(Manifest.permission.RECEIVE_SMS,Manifest.permission.SEND_SMS, Manifest.permission.BROADCAST_SMS), _permission_id)
         }
         return false
+    }
+
+	private fun sendSMS(phoneNo: String?, msg: String?, result: MethodChannel.Result) {
+        try {
+            val smsManager = SmsManager.getDefault()
+            smsManager.sendTextMessage(phoneNo, null, msg, null, null)
+            result.success("SMS Sent")
+        } catch (ex: Exception) {
+            ex.printStackTrace()
+            result.error("Err", "Sms Not Sent", "")
+        }
     }
 }
 

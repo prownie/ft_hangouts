@@ -105,15 +105,15 @@ class createContactState extends State<createContact> {
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.0)),
                     ),
                     child: IconButton(
-                    padding: const EdgeInsets.all(4.0),
-                    onPressed: () async {
-                       setState(() {
-                         imagePicked = null;
-                       });
-                   },
-                   color: Colors.white,
-                   icon: Icon(Icons.delete),
-                 )
+                       padding: const EdgeInsets.all(4.0),
+                       onPressed: () async {
+                          setState(() {
+                            imagePicked = null;
+                          });
+                      },
+                      color: Colors.white,
+                      icon: Icon(Icons.delete),
+                    )
                   )
                 ),
              ]),

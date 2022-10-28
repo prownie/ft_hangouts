@@ -1,13 +1,9 @@
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/material.dart';
-import 'package:ft_hangouts/utils/database_controller.dart';
+import 'package:ft_hangouts/main.dart';
 import 'package:ft_hangouts/utils/utils.dart';
-import '../models/contact.dart';
+import '../models/models.dart';
 import 'text_message.dart';
-import '../main.dart';
 import 'package:intl/intl.dart';
-import 'package:image_picker/image_picker.dart';
 
 class conversationPage extends StatefulWidget {
   final ValueNotifier<bool> smsUpdater;
@@ -22,11 +18,16 @@ class conversationPage extends StatefulWidget {
 class _conversationPageState extends State<conversationPage> {
   List<Map<String, dynamic>>? _messages;
   Contact? _contactInfos;
-  String? contactProfilePicture;
   String? appUserProfilePicture;
+  final smsToSendController = TextEditingController();
+
+  Future<String> getFavPP() async {
+    return await sharedPrefHelper.getFavProfilePicture();
+  }
 
   Future<void> getConversationWithContact() async {
     List<Map<String, dynamic>> msgList = await databaseController.instance.getConversationWithContact(widget.contactId);
+    appUserProfilePicture = await getFavPP();
     _messages = await getMessagesWithDate(msgList);
     _contactInfos = await getContactInfos();
     await databaseController.instance.updateUnreadMessages(widget.contactId, true);
@@ -50,18 +51,12 @@ class _conversationPageState extends State<conversationPage> {
                   .minute
                   .toString();
     }
-    tmp.add({
-      'message': 'localtest',
-      'date': tmp[0]['date'],
-      'time': tmp[0]['time'],
-      'mine': 1,
-      'profilePicture': tmp[0]['profilePicture']
-    });
     return tmp;
   }
 
   Future<Contact> getContactInfos() async {
      Contact contact;
+
      List<Map<String, dynamic>> contactMap = await databaseController.instance
         .getContactFromId(widget.contactId.toString());
       contact = new Contact(
@@ -95,36 +90,59 @@ class _conversationPageState extends State<conversationPage> {
                               _contactInfos!.lastName!)),
                       body: Container(
                         padding: const EdgeInsets.symmetric(horizontal: 15),
-                        child: SingleChildScrollView(
-                          child: Column(children: [
-                            Column(
-                              children: _messages?.map<Widget>((message)  {
-                                  print('hello');
-                                  print(message);
-                                    return TextMessage(
-                                        message: message['message'],
-                                        date: message['date'],
-                                        time: message['time'],
-                                        senderProfile: message['profilePicture'],
-                                        isMine: message['mine']);
-                                    // const SizedBox(height: 15),
-                                  }).toList() ??
-                                  []
-                              ,
-                            ),
+                        child: Column(
+                          children: [
+                            Expanded(child: SingleChildScrollView(
+                              child: Column(
+                                  children: _messages?.map<Widget>((message)  {
+                                        return TextMessage(
+                                            message: message['message'],
+                                            date: message['date'],
+                                            time: message['time'],
+                                            senderProfile: message['mine'] == 0 ? message['profilePicture'] : appUserProfilePicture ,
+                                            isMine: message['mine']);
+                                        // const SizedBox(height: 15),
+                                      }).toList() ??
+                                      []
+                                  ,
+                                ),
+                            )),
                             Row(
                               children: [
-                                Expanded(child: TextFormField(
-                                  decoration: InputDecoration(
-                                    border: OutlineInputBorder()
+                                Expanded(child:Padding(
+                                  padding: EdgeInsets.symmetric(vertical: 5),
+                                  child:TextFormField (
+                                    controller: smsToSendController,
+                                    keyboardType: TextInputType.multiline,
+                                    textInputAction: TextInputAction.newline,
+                                    minLines: 1,
+                                    maxLines: 5,
+                                    decoration: InputDecoration(
+                                      isDense: true,
+                                      contentPadding: EdgeInsets.fromLTRB(10, 10, 10, 0),
+                                      border: OutlineInputBorder(),
+                                    ),
                                   )
                                 )),
-                                Icon(Icons.send_rounded)
-                              ],
-                            )
-                          ],
-                        ),
-                      )));
+                                IconButton(
+                                   padding: const EdgeInsets.all(4.0),
+                                   onPressed: () async {
+                                      setState(() {
+                                        sms_controller.sendSms(_contactInfos!.phoneNumber!,smsToSendController.text).then((value) {
+                                          sms_controller.storeMessageInDb(smsToSendController.text, _contactInfos!.phoneNumber!, 1).then((value) {
+                                            widget.smsUpdater.value = !widget.smsUpdater.value;
+                                            smsToSendController.clear();
+                                          });
+                                        });
+                                        //_messages.add;
+                                      });
+                                  },
+                                  color: globalColor.value.shade700,
+                                  icon: Icon(Icons.send_rounded),
+                                )
+                              ])],
+                            ),
+                      ));
                 }
               });
         }));

@@ -68,7 +68,7 @@ class _contactsPageState extends State<contactsPage> {
                                             mainAxisAlignment:
                                                 MainAxisAlignment.spaceBetween,
                                             children: [
-                                              Container(
+                                              Expanded(child: Container(
                                                 margin: const EdgeInsets.only(
                                                     top: 25),
                                                 child: Column(
@@ -81,6 +81,9 @@ class _contactsPageState extends State<contactsPage> {
                                                       contact['firstName'] +
                                                           ' ' +
                                                           contact['lastName'],
+                                                      overflow:
+                                                          TextOverflow.fade,
+                                                      softWrap: false,
                                                       style: TextStyle(
                                                         color: globalColor.value.shade500,
                                                         fontSize: 15,
@@ -101,7 +104,7 @@ class _contactsPageState extends State<contactsPage> {
                                                     ]),
                                                   ],
                                                 ),
-                                              ),
+                                              )),
                                             ],
                                           ),
                                           const SizedBox(height: 20),
