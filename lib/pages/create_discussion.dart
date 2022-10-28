@@ -75,50 +75,56 @@ class createDiscussionState extends State<createDiscussion> {
                         TextEditingController textEditingController,
                         FocusNode focusNode,
                         VoidCallback onFieldSubmitted) {
-                      return TextFormField(
-                        controller: textEditingController,
-                        decoration: InputDecoration(
-                          hintText: contactFound.isEmpty
-                              ? AppLocalizations.of(context)!.selectContact
-                              : contactFound[0]['firstName'] +
-                                  ' ' +
-                                  contactFound[0]['lastName'],
+                      return Padding(
+                        padding: EdgeInsets.all(4),
+                        child: TextFormField(
+                          controller: textEditingController,
+                          decoration: InputDecoration(
+                            hintText: contactFound.isEmpty
+                                ? AppLocalizations.of(context)!.selectContact
+                                : contactFound[0]['firstName'] +
+                                    ' ' +
+                                    contactFound[0]['lastName'],
+                          ),
+                          focusNode: focusNode,
+                          onFieldSubmitted: (String value) {
+                            onFieldSubmitted();
+                          },
+                          validator: (String? value) {
+                            if (!filterContactList.contains(value)) {
+                              return 'Nothing selected.';
+                            }
+                            return null;
+                          },
                         ),
-                        focusNode: focusNode,
-                        onFieldSubmitted: (String value) {
-                          onFieldSubmitted();
-                        },
-                        validator: (String? value) {
-                          if (!filterContactList.contains(value)) {
-                            return 'Nothing selected.';
-                          }
-                          return null;
-                        },
                       );
                     },
                     optionsViewBuilder: (BuildContext context,
                         AutocompleteOnSelected<String> onSelected,
                         Iterable<String> options) {
-                      return Material(
+                      return Align(
+                        alignment: Alignment.topLeft,
+                        child: Material(
                           child: SizedBox(
-                              height: 200,
-                              child: SingleChildScrollView(
-                                  child: Column(
-                                children: options.map((opt) {
-                                  return InkWell(
-                                      onTap: () {
-                                        onSelected(opt);
-                                      },
-                                      child: Container(
-                                          padding: EdgeInsets.only(right: 60),
-                                          child: Card(
-                                              child: Container(
-                                            width: double.infinity,
-                                            padding: EdgeInsets.all(10),
-                                            child: Text(opt),
-                                          ))));
-                                }).toList(),
-                              ))));
+                            height: 250,
+                            child: ListView.builder(
+                              itemCount: options.length,
+                              itemBuilder: (BuildContext context, int index) {
+                                final String option = options.elementAt(index);
+                                return GestureDetector(
+                                  onTap: () {
+                                    onSelected(option);
+                                  },
+                                  child: Card(
+                                      child: ListTile(
+                                    title: Text(option),
+                                  )),
+                                );
+                              },
+                            ),
+                          ),
+                        ),
+                      );
                     },
                   ),
                   Expanded(child: Container()),
