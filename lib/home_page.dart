@@ -15,17 +15,24 @@ class HomePage extends StatefulWidget {
   State<HomePage> createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   ValueNotifier<bool> updater = ValueNotifier(false);
   ValueNotifier<bool> smsUpdater = ValueNotifier(false);
-
+  final List<AppLifecycleState> _stateHistoryList = <AppLifecycleState>[];
   int _selectedIndex = 0;
+  DateTime? appPausedDatetime;
+
   static const TextStyle optionStyle =
       TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
   late List<Widget> _widgetOptions;
 
   @override
   void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+    if (WidgetsBinding.instance.lifecycleState != null) {
+      _stateHistoryList.add(WidgetsBinding.instance.lifecycleState!);
+    }
     _widgetOptions = <Widget>[
       conversationsPage(smsUpdater),
       contactsPage(updater),
@@ -34,7 +41,9 @@ class _HomePageState extends State<HomePage> {
     _selectedIndex = _selectedIndex;
     sms_controller.initPermission();
     sms_controller().smsReceived().listen((event) {
-      sms_controller.storeMessageInDb(event['message'], event['sender'], 0).then((value) {
+      sms_controller
+          .storeMessageInDb(event['message'], event['sender'], 0)
+          .then((value) {
         updater.value = !updater.value;
         smsUpdater.value = !smsUpdater.value;
         print('smsupdater Updated');
@@ -42,7 +51,36 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-  Widget _getActionButton() {
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    setState(() {
+      _stateHistoryList.add(state);
+      if (_stateHistoryList[_stateHistoryList.length - 1] ==
+          AppLifecycleState.paused) {
+        appPausedDatetime = DateTime.now();
+      } else if (_stateHistoryList[_stateHistoryList.length - 1] ==
+          AppLifecycleState.resumed) {
+        if (appPausedDatetime != null) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+                content: Text(AppLocalizations.of(context)!.appHasBeenPaused +
+                    appPausedDatetime!.hour.toString() +
+                    ':' +
+                    appPausedDatetime!.minute.toString())),
+          );
+        }
+      }
+      ;
+    });
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  Widget _getActionButton(BuildContext context) {
     if (_selectedIndex != 2) {
       if (_selectedIndex == 0) {
         return FloatingActionButton.extended(
@@ -53,14 +91,10 @@ class _HomePageState extends State<HomePage> {
               await Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => createDiscussion(),
+                  builder: (context) => createDiscussion(smsUpdater),
                 ),
               );
             });
-        // onPressed: () {
-        //   globalColor.value = Colors.pink;
-        //   print('new color = ${globalColor.value}');
-        // });
       } else if (_selectedIndex == 1) {
         return FloatingActionButton.extended(
             label: Text(AppLocalizations.of(context)!.newContact),
@@ -92,7 +126,7 @@ class _HomePageState extends State<HomePage> {
         title: const Text('Ft_hangouts'),
       ),
       body: _widgetOptions.elementAt(_selectedIndex),
-      floatingActionButton: _getActionButton(),
+      floatingActionButton: _getActionButton(context),
       bottomNavigationBar: BottomNavigationBar(
           items: const <BottomNavigationBarItem>[
             BottomNavigationBarItem(
@@ -108,53 +142,3 @@ class _HomePageState extends State<HomePage> {
     );
   }
 }
-
-// class HomePage extends StatelessWidget {
-//   static const platform = MethodChannel('ft_hangouts.com');
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: const Text('ft_hangouts'),
-//         elevation: 0,
-//         backgroundColor: Black,
-//         leading: IconButton(
-//           onPressed: () async {
-//             await platform.invokeMethod("requestPermissionForSms");
-//           },
-//           icon: const Icon(
-//             Icons.menu,
-//             color: White,
-//             size: 30,
-//           ),
-//         ),
-//         actions: [
-//           IconButton(
-//               onPressed: () {},
-//               icon: const Icon(
-//                 Icons.account_circle,
-//                 color: White,
-//                 size: 30,
-//               ))
-//         ],
-//       ),
-//       body: Column(
-//         children: [
-//           MenuSection(),
-//           // FavoriteSection(),
-//           // Expanded(child: MessageSection())
-//         ],
-//       ),
-//       floatingActionButton: FloatingActionButton(
-//           onPressed: () {},
-//           backgroundColor: Blue,
-//           child: const Icon(
-//             Icons.edit,
-//             size: 20,
-//           )),
-//       // bottomNavigationBar: NavigationBar(
-//       //   height: 60,
-//       // ),
-//     );
-//   }
-// }

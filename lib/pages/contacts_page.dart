@@ -2,9 +2,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
-import '../utils/utils.dart'; 
+import '../utils/utils.dart';
 import '../pages/pages.dart';
 import '../main.dart';
+
 class contactsPage extends StatefulWidget {
   final ValueNotifier<bool> updater;
 
@@ -46,21 +47,23 @@ class _contactsPageState extends State<contactsPage> {
                                   ),
                                 );
                               },
-                              splashColor: Constants.Blue,
+                              splashColor: globalColor.value.shade300,
                               child: Container(
                                 padding: const EdgeInsets.only(
                                     left: 10, right: 10, top: 15),
                                 child: Row(
                                   children: [
                                     CircleAvatar(
-                                      radius:31,
-                                      backgroundColor: globalColor.value.shade900,
-                                      child: CircleAvatar(
-                                        radius:28,
-                                        backgroundImage: imageHelper.imageFromBase64String(contact['profilePicture']).image
-                                      )
-                                    ),
-                                    SizedBox(width:20),
+                                        radius: 31,
+                                        backgroundColor:
+                                            globalColor.value.shade900,
+                                        child: CircleAvatar(
+                                            radius: 28,
+                                            backgroundImage: imageHelper
+                                                .imageFromBase64String(
+                                                    contact['profilePicture'])
+                                                .image)),
+                                    SizedBox(width: 20),
                                     Expanded(
                                       child: Column(
                                         children: [
@@ -68,7 +71,8 @@ class _contactsPageState extends State<contactsPage> {
                                             mainAxisAlignment:
                                                 MainAxisAlignment.spaceBetween,
                                             children: [
-                                              Expanded(child: Container(
+                                              Expanded(
+                                                  child: Container(
                                                 margin: const EdgeInsets.only(
                                                     top: 25),
                                                 child: Column(
@@ -85,7 +89,8 @@ class _contactsPageState extends State<contactsPage> {
                                                           TextOverflow.fade,
                                                       softWrap: false,
                                                       style: TextStyle(
-                                                        color: globalColor.value.shade500,
+                                                        color: globalColor
+                                                            .value.shade500,
                                                         fontSize: 15,
                                                         fontWeight:
                                                             FontWeight.w500,

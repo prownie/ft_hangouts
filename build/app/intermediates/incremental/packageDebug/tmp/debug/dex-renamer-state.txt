@@ -1,4 +1,4 @@
-#Thu Oct 27 18:04:37 CEST 2022
-base.0=D\:\\Projets42\\ft_hangouts\\build\\app\\intermediates\\dex\\debug\\mergeDexDebug\\classes.dex
+#Fri Oct 28 18:46:34 CEST 2022
+base.0=/Users/rpichon/projets/ft_hangouts/build/app/intermediates/dex/debug/mergeDexDebug/classes.dex
 renamed.0=classes.dex
 path.0=classes.dex

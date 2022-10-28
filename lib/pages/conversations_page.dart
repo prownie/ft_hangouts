@@ -13,17 +13,18 @@ class conversationsPage extends StatefulWidget {
 }
 
 class _conversationsPageState extends State<conversationsPage> {
-
   Future<List<Map<String, dynamic>>> getData() async {
     return (await getConversations());
   }
 
   Future<List<Map<String, dynamic>>> getConversations() async {
-    List<Map<String, dynamic>> convList = await databaseController.instance.getConversations();
+    List<Map<String, dynamic>> convList =
+        await databaseController.instance.getConversations();
     return (await conversationsPrevisulation(convList));
   }
 
-  Future<List<Map<String, dynamic>>> conversationsPrevisulation(List<Map<String, dynamic>> convList) async {
+  Future<List<Map<String, dynamic>>> conversationsPrevisulation(
+      List<Map<String, dynamic>> convList) async {
     // need to make a copy because saflite return are readonly
     List<Map<String, dynamic>> tmp = [];
     for (final conv in convList) {
@@ -31,6 +32,13 @@ class _conversationsPageState extends State<conversationsPage> {
     }
     for (final conv in tmp) {
       final indexNewLine = conv['message'].indexOf('\n');
+      conv['time'] = DateTime.fromMillisecondsSinceEpoch(conv['dt'] * 1000)
+              .hour
+              .toString() +
+          ':' +
+          DateTime.fromMillisecondsSinceEpoch(conv['dt'] * 1000)
+              .minute
+              .toString();
       if (indexNewLine != -1) {
         conv['message'] = conv['message'].substring(0, indexNewLine);
       }
@@ -61,24 +69,28 @@ class _conversationsPageState extends State<conversationsPage> {
                                         conversation['id'], widget.smsUpdater),
                                   ),
                                 ).then((value) {
-                                  widget.smsUpdater.value = !widget.smsUpdater.value;
+                                  widget.smsUpdater.value =
+                                      !widget.smsUpdater.value;
                                 });
                               },
                               splashColor: globalColor.value.shade500,
                               child: Container(
                                 padding: const EdgeInsets.only(
-                                    left: 30, right: 10, top: 15),
+                                    left: 10, right: 10, top: 15),
                                 child: Row(
                                   children: [
                                     CircleAvatar(
-                                      radius:31,
-                                      backgroundColor: globalColor.value.shade900,
-                                      child: CircleAvatar(
-                                        radius:28,
-                                        backgroundImage: imageHelper.imageFromBase64String(conversation['profilePicture']).image
-                                      )
-                                    ),
-                                    SizedBox(width:23),
+                                        radius: 31,
+                                        backgroundColor:
+                                            globalColor.value.shade900,
+                                        child: CircleAvatar(
+                                            radius: 28,
+                                            backgroundImage: imageHelper
+                                                .imageFromBase64String(
+                                                    conversation[
+                                                        'profilePicture'])
+                                                .image)),
+                                    SizedBox(width: 20),
                                     Expanded(
                                       child: Column(
                                         children: [
@@ -100,8 +112,9 @@ class _conversationsPageState extends State<conversationsPage> {
                                                       overflow:
                                                           TextOverflow.fade,
                                                       softWrap: false,
-                                                      style: const TextStyle(
-                                                        color: Colors.grey,
+                                                      style: TextStyle(
+                                                        color: globalColor
+                                                            .value.shade500,
                                                         fontSize: 15,
                                                         fontWeight:
                                                             FontWeight.w500,
@@ -129,10 +142,12 @@ class _conversationsPageState extends State<conversationsPage> {
                                                   padding:
                                                       const EdgeInsets.only(
                                                           top: 30),
-                                                  child: Text('16:10'),
+                                                  child: Text(
+                                                      conversation['time']),
                                                 ),
                                                 if (conversation[
-                                                        'unreadMessages'] > 0)
+                                                        'unreadMessages'] >
+                                                    0)
                                                   Container(
                                                     padding:
                                                         const EdgeInsets.all(5),

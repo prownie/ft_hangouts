@@ -19,5 +19,8 @@
     "changeThemeColor": "Select a color to change theme",
     "changeLocale": "Language",
     "phoneLanguage": "Phone Language",
-	"addPicture": "Add picture"
+	"addPicture": "Add picture",
+	"appHasBeenPaused": "App has been paused at: ",
+	"contactAlreadyExists": "This phone number is already used",
+	"selectContact": "Select the contact you want to chat with"
 }

@@ -19,5 +19,8 @@
     "changeThemeColor": "Sélectionner la couleur souhaitée pour changer le thème",
 		"changeLocale": "Langage",
 		"phoneLanguage": "Langage du téléphone",
-	"addPicture": "Ajouter photo"
+	"addPicture": "Ajouter photo",
+  "appHasBeenPaused": "L'app a été mise en pause à: ",
+  "contactAlreadyExists": "Ce numéro de téléphone est déjà renseigné",
+  "selectContact": "Selectionnez le destinataire"
 }

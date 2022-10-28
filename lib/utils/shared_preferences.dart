@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'utils.dart';
 
 class sharedPrefHelper {
   static Future<MaterialColor> getFavColor() async {
@@ -67,11 +68,14 @@ class sharedPrefHelper {
   static Future<String> getFavProfilePicture() async {
     final prefs = await SharedPreferences.getInstance();
     String profilePicture = prefs.getString("profilePicture") ?? "";
+    if (profilePicture == "") {
+      setFavProfilePicture(await imageHelper.base64placeHolder());
+    }
     return profilePicture;
   }
 
   static Future<void> setFavProfilePicture(String profilePicture) async {
     final prefs = await SharedPreferences.getInstance();
-    prefs.setString('profilePicture',profilePicture);
+    prefs.setString('profilePicture', profilePicture);
   }
 }

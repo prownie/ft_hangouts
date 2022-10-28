@@ -55,6 +55,11 @@ class databaseController {
 
   Future<int> insertContact(Contact contact) async {
     Database db = await instance.db as Database;
+    var res = await db.query('Contact',
+        where: 'phoneNumber = ?', whereArgs: [contact.phoneNumber], limit: 1);
+    if (res.isNotEmpty) {
+      return 0;
+    }
     Map<String, dynamic> row = {
       'firstName': contact.firstName,
       'lastName': contact.lastName,
@@ -76,19 +81,21 @@ class databaseController {
 
   Future<List<Map<String, dynamic>>> getContacts() async {
     Database db = await instance.db as Database;
-    return await db.query('Contact');
+    return await db.query('Contact', orderBy: "firstName ASC");
   }
 
   Future<List<Map<String, dynamic>>> getConversations() async {
     Database db = await instance.db as Database;
-    return await db
-        .rawQuery('''SELECT c.firstName, c.lastName, c.id, c.unreadMessages,c.profilePicture, m.*
+    return await db.rawQuery(
+        '''SELECT c.firstName, c.lastName, c.id, c.unreadMessages,c.profilePicture, m.*
       FROM Contact c
       INNER JOIN (
-       SELECT message, MAX(datetime), contactId
+       SELECT message, MAX(datetime) as dt, contactId
        FROM Message
        GROUP BY contactId
-      ) m ON c.id=m.contactId''');
+      ) m ON c.id=m.contactId
+      ORDER BY m.dt DESC
+      ''');
   }
 
   Future<List<Map<String, dynamic>>> getConversationWithContact(
