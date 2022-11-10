@@ -66,4 +66,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get addPicture => 'Add picture';
+
+  @override
+  String get appHasBeenPaused => 'App has been paused at: ';
+
+  @override
+  String get contactAlreadyExists => 'This phone number is already used';
+
+  @override
+  String get selectContact => 'Select the contact you want to chat with';
 }

@@ -1,10 +1,10 @@
 {
     "logs": [
         {
-            "outputFile": "/Users/rpichon/projets/ft_hangouts/build/app/intermediates/incremental/mergeDebugResources/merged.dir/values-zh/values-zh.xml",
+            "outputFile": "D:\\Projets42\\ft_hangouts\\build\\app\\intermediates\\incremental\\mergeDebugResources\\merged.dir\\values-zh\\values-zh.xml",
             "map": [
                 {
-                    "source": "/Users/rpichon/.gradle/caches/transforms-3/c5ad09e0d49fe6423753be399010f082/transformed/jetified-ucrop-2.2.8/res/values-zh/values-zh.xml",
+                    "source": "C:\\Users\\rpichon\\.gradle\\caches\\transforms-3\\c5ad09e0d49fe6423753be399010f082\\transformed\\jetified-ucrop-2.2.8\\res\\values-zh\\values-zh.xml",
                     "from": {
                         "startLines": "2,3,4,5,6,7",
                         "startColumns": "4,4,4,4,4,4",

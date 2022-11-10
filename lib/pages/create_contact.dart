@@ -20,6 +20,8 @@ class createContactState extends State<createContact> {
   final firstNameController = TextEditingController();
   final lastNameController = TextEditingController();
   final phoneNumberController = TextEditingController();
+  final emailController = TextEditingController();
+  final addressController = TextEditingController();
   String imagePath = 'assets/images/avatar/profile-placeholder.jpg';
   String? base64image;
   File? imagePicked;
@@ -125,6 +127,7 @@ class createContactState extends State<createContact> {
                     ),
               const SizedBox(height: 20),
               TextFormField(
+                style: TextStyle(color: Colors.grey.shade300),
                 controller: firstNameController,
                 validator: (value) {
                   if (value == null || value.isEmpty)
@@ -138,6 +141,7 @@ class createContactState extends State<createContact> {
               ),
               const SizedBox(height: 20),
               TextFormField(
+                style: TextStyle(color: Colors.grey.shade300),
                 controller: lastNameController,
                 decoration: InputDecoration(
                   labelText: AppLocalizations.of(context)!.lastName,
@@ -146,6 +150,7 @@ class createContactState extends State<createContact> {
               ),
               const SizedBox(height: 20),
               TextFormField(
+                style: TextStyle(color: Colors.grey.shade300),
                 controller: phoneNumberController,
                 validator: (value) {
                   if (value == null ||
@@ -160,6 +165,24 @@ class createContactState extends State<createContact> {
                 ),
               ),
               const SizedBox(height: 20),
+              TextFormField(
+                style: TextStyle(color: Colors.grey.shade300),
+                controller: emailController,
+                decoration: InputDecoration(
+                  labelText: 'Email',
+                  border: OutlineInputBorder(),
+                ),
+              ),
+              const SizedBox(height: 20),
+              TextFormField(
+                style: TextStyle(color: Colors.grey.shade300),
+                controller: addressController,
+                decoration: InputDecoration(
+                  labelText: 'Addresse',
+                  border: OutlineInputBorder(),
+                ),
+              ),
+              const SizedBox(height: 20),
               ElevatedButton(
                   onPressed: () async {
                     if (_formKey.currentState!.validate()) {
@@ -167,6 +190,8 @@ class createContactState extends State<createContact> {
                           firstName: firstNameController.text,
                           lastName: lastNameController.text,
                           phoneNumber: phoneNumberController.text,
+                          email: emailController.text,
+                          address: addressController.text,
                           profilePicture: base64image != null
                               ? base64image
                               : await imageHelper.base64placeHolder());

@@ -41,6 +41,7 @@ class MyApp extends StatelessWidget {
           ],
           theme: ThemeData(
               // brightness: Brightness.dartk
+              scaffoldBackgroundColor: Colors.grey.shade800,
               primarySwatch: globalColor.value),
           title: 'ft_hangouts',
           color: globalColor.value,

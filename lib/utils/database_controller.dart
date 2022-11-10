@@ -42,7 +42,9 @@ class databaseController {
               lastName TEXT NOT NULL,
               phoneNumber TEXT NOT NULL,
               unreadMessages INTEGER DEFAULT 0,
-              profilePicture TEXT
+              profilePicture TEXT,
+              address TEXT DEFAULT '',
+              email TEXT DEFAULT ''
         )''');
     await db.execute('''CREATE TABLE Message(
             id INTEGER PRIMARY KEY,
@@ -64,7 +66,9 @@ class databaseController {
       'firstName': contact.firstName,
       'lastName': contact.lastName,
       'phoneNumber': contact.phoneNumber,
-      'profilePicture': contact.profilePicture
+      'profilePicture': contact.profilePicture,
+      'email': contact.email,
+      'address': contact.address
     };
     return await db.insert('Contact', row);
   }
@@ -116,7 +120,9 @@ class databaseController {
       'firstName': contact.firstName,
       'lastName': contact.lastName,
       'phoneNumber': contact.phoneNumber,
-      'profilePicture': contact.profilePicture
+      'profilePicture': contact.profilePicture,
+      'email': contact.email,
+      'address': contact.address
     };
     Database db = await instance.db as Database;
     db.update('Contact', row, where: 'id = ?', whereArgs: [contact.id]);
@@ -154,7 +160,9 @@ class databaseController {
           'lastName',
           'phoneNumber',
           'unreadMessages',
-          'profilePicture'
+          'profilePicture',
+          'email',
+          'address'
         ],
         where: 'id = ?',
         whereArgs: ids,
@@ -170,7 +178,9 @@ class databaseController {
           'firstName',
           'lastName',
           'phoneNumber',
-          'unreadMessages'
+          'unreadMessages',
+          'email',
+          'address'
         ],
         where: 'phoneNumber = ?',
         whereArgs: phoneNumbers,

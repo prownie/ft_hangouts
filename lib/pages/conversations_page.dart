@@ -125,8 +125,9 @@ class _conversationsPageState extends State<conversationsPage> {
                                                       overflow:
                                                           TextOverflow.fade,
                                                       softWrap: false,
-                                                      style: const TextStyle(
-                                                        color: Colors.black87,
+                                                      style: TextStyle(
+                                                        color: Colors
+                                                            .grey.shade300,
                                                         fontSize: 15,
                                                         fontWeight:
                                                             FontWeight.w500,

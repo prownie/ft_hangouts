@@ -50,13 +50,6 @@ class _profileState extends State<profile> {
           } else {
             return OrientationBuilder(builder: (context, orientation) {
               return Container(
-                decoration: BoxDecoration(
-                  image: DecorationImage(
-                      image:
-                          Image.asset("assets/images/backgroundHangouts.jpeg")
-                              .image,
-                      fit: BoxFit.cover),
-                ),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
@@ -168,7 +161,10 @@ class _profileState extends State<profile> {
                     Container(
                       child: Column(
                         children: [
-                          Text(AppLocalizations.of(context)!.changeLocale),
+                          Text(
+                            AppLocalizations.of(context)!.changeLocale,
+                            style: TextStyle(color: Colors.grey.shade300),
+                          ),
                           DropdownButton(
                               value: _selectedLocale != ""
                                   ? _selectedLocale

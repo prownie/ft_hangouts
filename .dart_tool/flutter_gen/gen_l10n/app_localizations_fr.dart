@@ -66,4 +66,13 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get addPicture => 'Ajouter photo';
+
+  @override
+  String get appHasBeenPaused => 'L\'app a été mise en pause à: ';
+
+  @override
+  String get contactAlreadyExists => 'Ce numéro de téléphone est déjà renseigné';
+
+  @override
+  String get selectContact => 'Selectionnez le destinataire';
 }

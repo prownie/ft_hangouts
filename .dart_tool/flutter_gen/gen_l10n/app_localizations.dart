@@ -218,6 +218,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Add picture'**
   String get addPicture;
+
+  /// No description provided for @appHasBeenPaused.
+  ///
+  /// In en, this message translates to:
+  /// **'App has been paused at: '**
+  String get appHasBeenPaused;
+
+  /// No description provided for @contactAlreadyExists.
+  ///
+  /// In en, this message translates to:
+  /// **'This phone number is already used'**
+  String get contactAlreadyExists;
+
+  /// No description provided for @selectContact.
+  ///
+  /// In en, this message translates to:
+  /// **'Select the contact you want to chat with'**
+  String get selectContact;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
